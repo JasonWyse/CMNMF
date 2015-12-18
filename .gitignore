@@ -35,4 +35,9 @@
 *.tdo
 *.pdf
 *.bak
-DrawPicutres/
+*.bak
+*.aux
+*.log
+*.sav
+*.html
+
