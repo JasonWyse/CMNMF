@@ -444,7 +444,7 @@ We combine the phenotype ontologies from level 4 and level 5 as features for eac
 
 For methods LDA, NMF, HMF, ColNMF and CMNMF, the gene clustering results are row-normalized by using z-score. For each gene, it can belong to multiple clusters, as it can participate in a couple of pathways, so we take the following strategy to predict the clusters the gene belongs to: first, for a cluster distribution of a gene, we sort the values in a descending order; then we choose the top k clusters, of which the sum of the values is closest to 0.9, as the modules this gene belongs to.
 \subsection*{\textbf{Evaluation on Gene Clustering results}}
-In Our paper, we evaluate the gene clustering results from external criteria and internal criteria respectively. External criteria includes $F_1$, $Jaccard\ Index$ and $Rand\ Index$, for internal criteria, we choose $\mathcal{M}_{sim}$ defined in \cite{Bordino2010}. 
+In Our paper, we evaluate the gene clustering results from external criteria and internal criteria respectively. External criteria includes $F_1$, $Jaccard\ Index$ and $Rand\ Index$, for internal criteria, we choose $\mathcal{M}_{sim}$ defined in \cite{Bordino2010}.  
 
  We use $n$ to denote the total gene number, all genes can be denoted as $S=\{O_1,...,O_n\}$, we use gene pathways $X=\{X_1,...,X_r\}$ as the ground-truth partition of genes, and use clustering result $Y=\{Y_1,...,Y_s\}$ as prediction partitions, then define the following notations: TP, TN, FN, FP, which are defined according to whether pairs of elements of $S$ are in $X$ and $Y$ or not
 %\footnote{more details see: https://en.wikipedia.org/wiki/Rand\_index}.
