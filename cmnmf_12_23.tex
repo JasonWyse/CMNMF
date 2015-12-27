@@ -378,14 +378,14 @@ Our method's effectiveness on clustering gene modules is demonstrated on sampled
 
 As an extension of CMNMF, by incorporating gene classification prior, our Supervised CMNMF show the good ability to classify multi-label problem compared with LP and ColNMF.
 \subsection*{\textbf{Data Preparation and Evaluation}}
- The mouse gene-phenotype ontology associations are extracted from file ``MGI\_Geno\_Disease.rpt" (December-2015) downloaded from MGI \footnote{ftp://ftp.informatics.jax.org/pub/reports/MGI\_Geno\_Disease.rpt}, in which 7029 gene-phenotype associations at level 4 and 8588 associations at level 5 are kept. 2342 ontology terms at level 4 (parent level) and 3257 ontology terms at level 5 (child level)  are selected from the 11471 MP terms in the ``MPheno\_OBO.ontology''(November-2015) \footnote{ftp://ftp.informatics.jax.org/pub/reports/MPheno\_OBO.ontology}. 3583 hierarchial mapping relations(adjacent parent-child relationships) between phenotypes in level 4 and level 5 are kept as $M$.
+ The mouse gene-phenotype ontology associations are extracted from file ``MGI\_Geno\_Disease.rpt" (December-2015) downloaded from MGI \footnote{ftp://ftp.informatics.jax.org/pub/reports/MGI\_Geno\_Disease.rpt}, in which 7029 gene-phenotype associations at level 4 and 8588 associations at level 5 are kept. 2342 ontology terms at level 4 (parent level) and 3257 ontology terms at level 5 (child level)  are selected from the 11471 MP terms in the ``MPheno\_OBO.ontology'' (November-2015) \footnote{ftp://ftp.informatics.jax.org/pub/reports/MPheno\_OBO.ontology}. 3583 hierarchial mapping relations (adjacent parent-child relationships) between phenotypes in level 4 and level 5 are kept as $M$.
 
 In our gene module clustering problem,
 after removing phenotypes, which neither has relationships with any disease genes in gene-phenotype association matrix nor has relationships with any phenotypes in parent or child levels in hierarchial mapping relations, then we generate a dataset containing 1354 disease genes and 5245 phenotypes.
 
-To evaluate the clustering performance for CMNMF, we crawled 280 mouse gene pathways from KEGG\footnote{http://www.genome.jp/kegg/pathway.html} and selected 225 of them as the ``ground truth'' of gene modules (We interact each pathway with genes in gene-phenotype association matrix, if the interacting common genes for this pathway are less than 3, we hold this out. At last, we get 225 pathways in total). Genes in a signal pathway can be considered as a gene functional module (or a gene cluster).
+To evaluate the clustering performance for CMNMF, we crawled 280 mouse gene pathways from KEGG\footnote{http://www.genome.jp/kegg/pathway.html} and selected 225 of them as the ``ground truth'' of gene modules (We intersect each pathway with genes in gene-phenotype association matrix, if the common genes for this pathway are less than 3, we hold this pathway out. At last, we get 225 pathways in total). Genes in a signal pathway can be considered as a gene functional module (or a gene cluster).
 
-In the leave-one-out cross-validation, after preprocessing (removing genes not present in the gene pathways, and choosing the phenotypes that has relationships with selected genes and the phenotypes that have parent-child relationships), we generated a dataset with 703 genes and 4116 phenotypes.
+In the leave-one-out cross-validation experiment for S-CMNMF, after preprocessing (removing genes not present in the gene pathways, and choosing the phenotypes that has relationships with selected genes and the phenotypes that have parent-child relationships), we generated a dataset with 760 genes and 5245 phenotypes.
 \subsection*{\textbf{CMNMF on Sampled Data}}
 \begin{figure}[!h]
   \centering
@@ -397,8 +397,8 @@ In the leave-one-out cross-validation, after preprocessing (removing genes not p
    \includegraphics[width=\linewidth]{DrawPictures/Hierarchica.pdf}
     \centerline{(b)}
   \end{minipage}
-  \vfil
-  \begin{minipage}{.3\linewidth}
+  \hfil
+  \begin{minipage}{.30\linewidth}
    \includegraphics[width=\linewidth]{DrawPictures/v0.pdf}
     \centerline{(c)}
   \end{minipage}
@@ -416,10 +416,11 @@ In the leave-one-out cross-validation, after preprocessing (removing genes not p
   phenotype. If there is a association between a gene and a phenotype, the \protect \\
   corresponding position is colored, otherwise it's uncolored. (a) a overview of \protect \\
   association matrix of sampled data; (b) Illustration of hierarchical information \protect \\
-  of phenotype ontology we used in our model; (c) Clustering result of HMF; (d)\protect \\
-  Clustering result of CMNMF($\gamma$=1). In (c) and (d), each group is characterized \protect \\
-  with phenotypes, which are classified to groups after the convergence. We also \protect \\
-  show how much percent of each phenotype takes within a group.}
+  of phenotype ontology we used in our model; (c) Clustering result of NMF; (d)\protect \\
+  Clustering result of ColNMF($\gamma$=1); (e) Clustering result of CMNMF. In (d) \protect \\
+  and (e), each group is characterized with phenotypes, which are classified to\protect \\
+  groups after the convergence. We also show how much percent of each phenotype \protect \\
+  takes within a group.}
   \label{fig:sampled_result}
 \end{figure}
  We sampled gene-phenotype association matrix and hierarchical mapping relations from real data to illustrate the usage of the hierarchical information. Figure \ref{fig:sampled_result}(a) is a overview of the sampled data matrix; Figure \ref{fig:sampled_result}(b) illustrates the hierarchical information we used in CMNMF, the upper matrix means the associations between genes and phenotypes from parent level, the lower matrix means the associations between genes and phenotypes from child level, the different color dash lines means parent-child phenotype relationships in different groups.
@@ -427,8 +428,7 @@ In the leave-one-out cross-validation, after preprocessing (removing genes not p
 To be more specific, we sampled the common nine genes from three pathways (or groups) (Irs2, Pdx1, Pik3r1 are from pathway mmu7930, \emph{i.e.} type-\uppercase\expandafter{\romannumeral2} diabetes mellitus; Hras, Braf, Ctnnb1 are from pathway mmu5212, \emph{i.e.} prostate cancer; Wnt7a, Bmp4, Shh are from pathway mmu5217, \emph{i.e.} Basal cell carcinoma). For each group, there are two genes associating with phenotypes in the child level (like in Figure \ref{fig:sampled_result}(b), Pdx1 and Pik3r1, from pathway mmu7930, are interacting with MP5559, MP5560, which are in the child level of the phenotype ontology hierarchical tree), and another gene associating with the parent phenotypes (Irs2, from pathway mmu7930, is interacting with MP188, which is in the parent level). The task is to cluster the three genes, which are coming from the same pathway, into a same group.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
-  We apply HMF and our model CMNMF to the sampled data, conducting each experiment 20 times and show average result in Figure \ref{fig:sampled_result}(c) and (d) respectively. Figure \ref{fig:sampled_result}(c) tells the fact that we use a common basis matrix $G$ while factorizing $A_1$ and $A_2$ simultaneously, we can see that in each gene group module, there exists misclassified genes(such like, Ctnnb1 shouldn't be grouped with Irs2 and Pdx1, it's supposed to classified with Hras and Braf). After we adding the hierarchical information to our model, just as Figure \ref{fig:sampled_result}(d) shows, all the genes are classified into three groups perfectly. It demonstrates that the two constraints working together can get the best performance. The reasons for the performance improvement are that with the consistent constraint, CMNMF can incorporate information from two levels and take advantage of the complement characteristic of information from different levels to overcome the shortcoming of lacking enough information from only one level and the hierarchy mapping constraint can help restrict cluster results according to the structure of data which narrows the range of solution space so that we can get a better solution.
-
+  We apply NMF, ColNMF and CMNMF to the sampled data, show the results in Figure \ref{fig:sampled_result}(c) ,(d) and (e) respectively. Figure \ref{fig:sampled_result}(c) tells that NMF method gives a random clustering results ,Figure \ref{fig:sampled_result}(d) tells the fact that we use a common basis matrix $G$ while factorizing $A_1$ and $A_2$ simultaneously, we can see that in each gene group module, there exists misclassified genes(such like, Ctnnb1 shouldn't be grouped with Irs2 and Pdx1, it's supposed to classified with Hras and Braf). After we adding the hierarchical information to our model, just as Figure \ref{fig:sampled_result}(e) shows, all the genes are classified into three groups perfectly. It demonstrates that the two constraints working together can get the best performance. The reasons for the performance improvement are that with the consistent constraint, CMNMF can incorporate information from two levels and take advantage of the complement characteristic of information from different levels to overcome the shortcoming of lacking enough information from only one level and the hierarchy mapping constraint can help restrict cluster results according to the structure of data which narrows the range of solution space so that we can get a better solution.
 %\subsection*{\textbf{2 Functional gene module similarity analysis}}
 %\begin{figure}[!h]
 %  \centering
@@ -437,14 +437,16 @@ To be more specific, we sampled the common nine genes from three pathways (or gr
 %\end{figure}
 
 \subsection*{\textbf{Comparison with Baseline Methods by Mining Gene Modules}}
-In this part, we evaluate the proposed CMNMF and baseline methods on MGI mouse gene-phenotype ontology association data.
-CMNMF is executed to mine gene functional modules and it is compared with the following clustering methods: HAC (Hierarchical Agglomerative Clustering)\cite{Ward1963}, KMeans, Kernel-Kmeans\cite{Dhillon2004}, LDA\cite{Blei2003},NMF\cite{Mika1999} ,HMF (Hierarchical Matrix Factorization) \cite{AliMashhoori2012} and ColNMF\cite{Singh2008}. To be fair, all matrix factorization-based methods are implemented with sparse and non-negative constraints. We measured the performance by the $F_1$ measure, $Jaccard\ Index$, $Rand\ index$, and $\mathcal{M}_{sim}$.
+In this part, we evaluate the proposed CMNMF and baseline methods on MGI mouse gene-phenotype association data.
+CMNMF is executed to mine gene functional modules and it is compared with the following clustering methods: HAC (Hierarchical Agglomerative Clustering)\cite{Ward1963}, KMeans, Kernel-Kmeans\cite{Dhillon2004}, LDA\cite{Blei2003},NMF\cite{Mika1999} ,HMF (Hierarchical Matrix Factorization) \cite{AliMashhoori2012} and ColNMF (Collective NMF)\cite{Singh2008}. To be fair, all matrix factorization-based methods are implemented with sparse and non-negative constraints. We measured the performance by the $F_1$ measure, $Jaccard\ Index$, $Rand\ index$, and $\mathcal{M}_{sim}$.
 
-We combine the phenotypes from level 4 and level 5 as features for each genes, and apply this data to HAC, Kmeans, Kernel-Kmeans, LDA, and NMF. In HAC and Kmeans, we use the Euclidean distance as the gene similarity measure to cluster the genes; for Kernel-Kmeans, Gaussian Kernel function is used for calculating the gene similarity, there is a hyper-parameter $\sigma$ in Kernel-Kmeans, we search it in \{0.001,0.01,0.1,1,10\}; we set the values of hyper-parameters $\alpha$ and $\beta$ in LDA as \cite{Wei2006} suggested. Because there are common sparse constraints in NMF, HMF and CMNMF, we search the parameters $\lambda_1$, $\lambda_2$ in a grid \{0.001,0.01.0.1,0,1,10\}; in our proposed model CMNMF, there are two additional parameters $\alpha$ and $\gamma$, when $\gamma$ is set to zero, our model CMNMF degrades to ColNMF, we will give more discussions about how these two parameters affect the performance of CMNMF in the following parts.
+We combine the phenotype ontologies from level 4 and level 5 as features for each genes, and apply this data to HAC, Kmeans, Kernel-Kmeans, LDA and NMF. In HAC and Kmeans, we use the Euclidean distance as the gene similarity measure to cluster the genes; for Kernel-Kmeans, Gaussian Kernel function is used for calculating the gene similarity, there is a hyper-parameter $\sigma$ in Kernel-Kmeans, we search it in \{0.001,0.01,0.1,1,10\}; we set the values of hyper-parameters $\alpha$ and $\beta$ in LDA as \cite{Wei2006} suggested. Because there are common sparse constraints in NMF, HMF , ColNMF, and CMNMF, we search the parameters $\lambda_1$, $\lambda_2$ in a grid \{0.001,0.01.0.1,0,1,10\}; in our proposed model CMNMF, there are two additional parameters $\alpha$ and $\gamma$, when $\gamma$ is set to zero, our model CMNMF degrades to ColNMF, we will give more discussions about how these two parameters affect the performance of CMNMF in the following parts.
 
-For methods LDA, NMF, HMF, and CMNMF, the gene clustering results are row-normalized by using z-score. For each gene, it can belong to multiple clusters, as it can participate in a couple of pathways, so we take the following strategy to predict the clusters the gene belongs to. First, for a cluster distribution of a gene, we sort the values in a descending order; then we choose the top k clusters, of which the sum of the values is closest to 0.9, as the gene belongs to.
+For methods LDA, NMF, HMF, ColNMF and CMNMF, the gene clustering results are row-normalized by using z-score. For each gene, it can belong to multiple clusters, as it can participate in a couple of pathways, so we take the following strategy to predict the clusters the gene belongs to: first, for a cluster distribution of a gene, we sort the values in a descending order; then we choose the top k clusters, of which the sum of the values is closest to 0.9, as the modules this gene belongs to.
+\subsection*{\textbf{Evaluation on Gene Clustering results}}
+In Our paper, we evaluate the gene clustering results from external criteria and internal criteria respectively. External criteria includes $F_1$, $Jaccard\ Index$ and $Rand\ Index$, for internal criteria, we choose $\mathcal{M}_{sim}$ defined in \cite{Bordino2010}. 
 
-Follow the description above, we get the results of gene clustering. We use $n$ to denote the total gene number, all genes can be denoted as $S=\{O_1,...,O_n\}$, we use gene pathways $X=\{X_1,...,X_r\}$ as the ground-truth partition of genes, and use clustering result $Y=\{Y_1,...,Y_s\}$ as prediction partitions, then define the following notations: TP, TN, FN, FP, which are defined according to whether pairs of elements of $S$ are in $X$ and $Y$ or not
+ We use $n$ to denote the total gene number, all genes can be denoted as $S=\{O_1,...,O_n\}$, we use gene pathways $X=\{X_1,...,X_r\}$ as the ground-truth partition of genes, and use clustering result $Y=\{Y_1,...,Y_s\}$ as prediction partitions, then define the following notations: TP, TN, FN, FP, which are defined according to whether pairs of elements of $S$ are in $X$ and $Y$ or not
 %\footnote{more details see: https://en.wikipedia.org/wiki/Rand\_index}.
 %\begin{itemize}
 %\item TP, the number of pairs of elements in $S$ that are in the same set in $X$ and in the same set in $Y$
@@ -460,7 +462,7 @@ Jaccard\ Index&=\frac{TP}{TP+FP+FN}\\
 Rand\ Index&=\frac{TP+TN}{TP+FP+FN+TN}
 \end{split}
 \end{equation}
-For all these three measurements $F_1\ measure$, $Jaccard\ Index$ and $Rand\ Index$, the higher values, the better clustering results.
+For all these three external criteria measurements $F_1\ measure$, $Jaccard\ Index$ and $Rand\ Index$, the higher values, the better clustering results.
 %\begin{equation}
 %\begin{split}
 %IC(t_i)&=Specificity(t_i)\times{Coverage(t_i)}\\
@@ -472,7 +474,7 @@ For all these three measurements $F_1\ measure$, $Jaccard\ Index$ and $Rand\ Ind
 %FS_{simGIC}(G_A,G_B)=\frac{\sum_{t_i\in{T_A\bigcap{T_B}}}IC(t_i)}{\sum_{t_j\in{T_A\bigcup{T_B}}}IC(t_j)}
 %\end{split}
 %\end{equation}
-Another measurement on gene ontology for prediction clustering result $Y=\{Y_1,...,Y_s\}$, we take the same evaluation $\mathcal{M}_{sim}$ in \cite{Bordino2010}, using  $(Sim)_{inter}$ to denote the average similarity between different gene clusters, $(Sim)_{intra}$ to denote average similarity of different genes within gene clusters. then $\mathcal{M}_{sim}$ is defined as:
+Another measurement on gene ontology for prediction clustering result $Y=\{Y_1,...,Y_s\}$, we take the evaluation criteria $\mathcal{M}_{sim}$ in \cite{Bordino2010}, using  $(Sim)_{inter}$ to denote the average similarity between different gene clusters, $(Sim)_{intra}$ to denote average similarity of different genes within gene clusters. then $\mathcal{M}_{sim}$ is defined as:
 $$
 \mathcal{M}_{sim} = \frac{(Sim)_{inter}}{(Sim)_{intra}}
 $$
