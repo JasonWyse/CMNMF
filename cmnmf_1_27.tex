@@ -1,0 +1,669 @@
+
+\documentclass{bmcart}
+
+
+\usepackage[utf8]{inputenc} %unicode support
+%\usepackage{caption}
+\usepackage{graphicx}
+\usepackage{bm}
+\usepackage{color}
+\usepackage{subfigure}
+\usepackage{multirow}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{array}
+\usepackage{subfigure}
+\usepackage{mathrsfs}
+\usepackage{epstopdf}
+\usepackage{amsmath}
+\usepackage{enumerate}
+\usepackage{amsmath}
+%turn footnote to endnote
+\usepackage{endnotes}
+\let\footnote=\endnote
+\renewcommand{\notesname}{Endnotes}
+%\usepackage{underscore}
+\usepackage{booktabs,caption,fixltx2e}
+\usepackage[flushleft]{threeparttable}
+\startlocaldefs
+\endlocaldefs
+
+
+%%% Begin ...
+\begin{document}
+%%% Start of article front matter
+\begin{frontmatter}
+
+\begin{fmbox}
+\dochead{Research}
+
+\title{Consistent Multiple Nonnegative Matrix Factorization with Hierarchical Information for Gene Functional Modules Mining}
+
+
+\author[
+   addressref={aff1,aff2},                   % id's of addresses, e.g. {aff1,aff2}
+   %corref={aff1},                       % id of corresponding address, if any
+   %noteref={n1},                        % id's of article notes, if any
+   email={ygzhang@mail.nankai.edu.cn}   % email address
+]{\inits{YGZ}\fnm{YaoGong} \snm{Zhang}}
+\author[
+   addressref={aff1,aff2},
+   email={xuyingjie@mail.nankai.edu.cn}
+]{\inits{YJX}\fnm{YingJie} \snm{Xu}}
+\author[
+   addressref={aff1,aff2},
+   email={nkufanxin@mail.nankai.edu.cn}
+]{\inits{XF}\fnm{Xin} \snm{Fan}}
+\author[
+   addressref={aff1,aff2},
+   email={hongyuxiang@mail.nankai.edu.cn}
+]{\inits{YXH}\fnm{YuXiang} \snm{Hong}}
+\author[
+   addressref={aff1,aff2},
+   email={hezhicheng@mail.nankai.edu.cn}
+]{\inits{ZCH}\fnm{ZhiCheng} \snm{He}}
+\author[
+   addressref={aff1,aff2},
+   email={huangyl@nankai.edu.cn}
+]{\inits{YLH}\fnm{YaLou} \snm{Huang}}
+\author[
+   addressref={aff1,aff2},
+   corref={aff1},                       % id of corresponding address, if any
+   email={xiemq@nankai.edu.cn}
+]{\inits{MQX}\fnm{MaoQiang} \snm{Xie}}
+
+\address[id=aff1]{%
+  \orgname{College of Software, NanKai University},
+  %\street{D\"{u}sternbrooker Weg 20},
+  \postcode{300350}
+  \city{TianJin},
+  \cny{China}
+}
+\address[id=aff2]{%                           % unique id
+  \orgname{College of Computer and Control Engineering, NanKai University}, % university, etc
+  %\street{WeiJin Road},                     %
+  \postcode{300350}                                % post or zip code
+  \city{TianJin},                              % city
+  \cny{China}                                    % country
+}
+
+
+%\begin{artnotes}
+%%\note{Sample of title note}     % note to the article
+%\note[id=n1]{Equal contributor} % note, connected to author
+%\end{artnotes}
+
+\end{fmbox}% comment this for two column layout
+
+\begin{abstractbox}
+
+\begin{abstract} % abstract
+\parttitle{Background} %if any
+An increasing amount of genome-phenome association data, has provided us a great chance to globally explore the underlying genetic mechanisms and understand the regularization between genes and diseases with a deep sight perspective. Gene modules mining, which reveal the interactions between genes and help researchers to identify candidate genes as drug targets, have always been a significant and valuable problem by mining genome-phenome association data. Nevertheless, the hierarchical structure of phenotype ontology has been rarely leveraged by previous gene clustering studies. The relationships between genes and disease phenotypes has not been fully explored, which may result in missing the chance to discover the crucial fact in biology. Thereby, it is challenging to utilize this hierarchical character of phenotype ontology to gain understanding of biological system.\\
+\textbf{Results:}
+We propose a novel method, Consistent Multiple Nonnegative Matrix Factorization (CMNMF), to factoriz genome-phenome association data with the help of hierarchical structure information of phenotype ontology, which can cluster genes well for further mining gene functional modules. The CMNMF constrains the gene cluster matrix to remain consistent while it interacts with different phenotype ontology levels in decomposing the genome-phenome association matrix, meanwhile it restricts the similarity of adjacent phenotype ontology pairs to satisfy the hierarchical structure. The results show the effectiveness of our CMNMF compared with other baselines. Additionally, as an extension of CMNMF, we conduct the Supervised Consistent Multiple Nonnegative Matrix Factorization (S-CMNMF) to do multi-label gene pathways classification problem, S-CMNMF beats other baselines as well. All of these indicate the success of CMNMF to apply to gene modules mining problem. \\
+\textbf{Conclusions:}
+Our work explores the crucial impact of hierarchical structure of phenotype ontology in gene clustering, and we show CMNMF outperforms baselines in both unsupervised and supervised manner, which provides a new perspective to conduct research on biological data exploration.\\
+\textbf{Availability:} \texttt{https://github.com/nkiip/CMNMF}\\
+%\textbf{Contact:} {name@bio.com}{name@bio.com}\\
+%\parttitle{Second part title} %if any
+%Text for this section.
+\end{abstract}
+
+\begin{keyword}
+\kwd{NMF}
+\kwd{Gene modules mining}
+\kwd{Hierarchical information}
+\end{keyword}
+
+
+\end{abstractbox}
+%
+%\end{fmbox}% uncomment this for twcolumn layout
+
+\end{frontmatter}
+
+
+\section*{Background}
+Studies on genome-phenome association data have been a key research area recently. It is of great significance to explore the interactions between genes and (or) phenotypes for drug development and disease treatment. With the development of technology, biomedical researchers have collected a large amount of valuable biological data by these years, especially the genome-phenome association data on mouse, whose research achievement may transfer to human disease studies. Thereby it is necessary and essential for researchers to have a deep sight investigation on mouse data. The international database resources such as Mouse Genome Informatics (MGI) \cite{Eppig2015}, Kyoto Encyclopedia of Genes and Genomes (KEGG) \cite{Kanehisa2000} etc. provide more and more multiple types of mouse biological data. However, how to integrate and utilize those data in a effective way to discover the underlying patterns and biological mechanism is still a challenge, which has drawn growing attention in the literatures.
+
+It is well known that genes in mammal genomes are usually organized into groups functionally associate with phenotype groups \cite{XuanH2015,Lage2007}. Mining of functionally related genes modules is a crucial primary step towards dissecting the regulatory circuitry underlying biological processes. Co-regulated or functionally related genes are likely to reveal themselves by associations with different diseases. These modules may provide clues about the main biological processes associated to different physiological states and provide guidance for candidate genes of genetic diseases.
+
+%Phenotypes, is the composite of an organism's observable characteristics or traits, results from the expression of an organism's genes as well as the influence of environmental factors and the interactions between the two \cite{McKusick2007,PhilipGroth2006}. The key to achieving desired gene modules such as favorable disease treatment outcomes lies in the understanding of the relation between phenotypes and the biological roles of genes \cite{Rubin2008,Edwards2004}.
+
+Phenotype ontology was created to serve as a standardized vocabulary of phenotypic abnormalities that have been seen in diseases \cite{Kohler2014}. This kind of structure provides researchers extra information about the relationships between phenotype pairs. Whereas, as far as we know, the hierarchical structure of phenotype ontology has not been utilized for gene module identification, the phenotype ontology in different levels reflects underlying associations while interacting with disease genes. With taking advantage of this character, it gives us a new perspective to explore the patterns behind the biological data.
+
+%A ‘topological module’ represents a locally dense neighbourhood in a network, such that nodes have a higher tendency to link to nodes within the same local neighbourhood than to nodes outside it. Such modules can be identified using network clustering algorithms that are blind to the function of individual nodes.
+
+Much research studies have been conducted on gene module clustering. The traditional way to cluster gene modules is based on network clustering algorithms.
+Ahn \cite{Ahn2010} constructed communities as groups of links rather than nodes, link communities naturally incorporate overlap while revealing hierarchical organization. Gopalan \cite{Gopalan2013} develop a scalable approach that is based on a Bayesian model of networks, it allows nodes to participate in multiple communities to community detection. Didier \cite{Didier2015} assessed aggregation, consensus and multiplex-modularity approaches to detect communities from multiple network sources, it showed that taking into account the multiplexity of biological networks could lead to better-defined functional modules.
+%These methods are primarily based on the topological property of the network, those algorithms are also blind to the function of individual nodes.
+%We should be aware of that the network clustering algorithms are mainly focusing on homogenous nodes, although we can define different types of relations on homogenous nodes, it is still short for reflecting the relationship between different types of nodes while clustering the heterogenous network.
+
+Another natural way to cluster genes is the NMF based method. Compared to network based clustering algorithms, NMF based methods can express the nodes in a low latent space, which provide us a good opportunity to add more specific constraints between homogenous or heterogenous nodes. Some procedures relating to gene expression profiles (such as gene expression, miRNA expression, and copy number variation etc.), were seeking to cluster genes through NMF based methods.
+Zhang \cite{Zhang2011} focused on integrating multiple type genomic data to identify microRNA-gene regulatory modules for cancers by sharing a common space of biological sets. Liu \cite{XiaoLiu2015} proposed Hessian regularization based NMF (HR-NMF) algorithm to gene expression data  clustering task. Zhang \cite{Zhang2015} proposed a NMF-based constrained clustering framework which enforced the similarity of must-link and cannot-link and applied it to deal with clustering of gene expression data. Wang \cite{Wang2015} extended NMF to a joint version (jNMF), which factorized multiple transcriptomics data matrices into one common submatrix plus multiple individual submatrices to identify differentially expressed genes.
+Additionally,
+Hwang \cite{Hwang2012} added penalty and regularization terms to keep the final results consistent with clusters obtained from prior knowledge on the disease phenotype similarity network.
+
+%(Houle et at.,2010)
+%("Phenome-driven disease genetics prediction toward drug discovery").
+Since some data contains specific structures behind it, some structure based methods are proposed and all achieve good results. In order to explore and model the structure correlations among users and items, Wang \cite{Wang2014} designed a hierarchical group matrix factorization (HGMF) method for item recommendation.
+Mashhoori \cite{AliMashhoori2012} found that items can be treated as different groups and then incorporated  hierarchical information between groups into matrix factorization for collaborative filtering.
+%based on the intuition that users’ trust relations can be employed to enhance traditional recommender systems, a few trust-aware recommendation methods have been proposed \cite{Ma2008}. These methods utilize the inferred implicit or observed explicit trust information to further improve traditional recommender systems.
+%based on the intuition that a user’s social network will affect this user’s behaviors on the Web, Ma \cite{Ma2008} present a novel social recommendation framework fusing a user-item rating matrix with the user’s social network using probabilistic matrix factorization.
+Shan \cite{Shan2012} focuses on predicting missing traits for plants which incorporates hierarchical phylogenetic information into matrix factorization. The results of these methods demonstrate that considering auxiliary structured information can bring a better performance.
+
+In this study, we developed a novel NMF based approach Consistent Multiple Nonnegative Matrix Factorization (CMNMF) to combine structured phenotype ontology data on mouse disease phenotype to predict disease-associated gene modules. The key ideas of our method are that the same gene should be active in the same modules when interacting with phenotypes from different levels of the hierarchical phenotype ontology, and the similarity of adjacent phenotype ontology pairs, which has parent-child relationships, should have a high similarity score in the hierarchical structure. To demonstrate the approach, we conduct our proposed method on a sampled data first, and series of measurements with other baselines on gene clustering task. The performance of our CMNMF on $F_1$, $measure$, $Rand$ $Index$, $Jaccard\ Index$, and $M_{Sim}$ outperform other baselines, including Kmeans, Kernel-Kmeans \cite{Dhillon2004}, HAC \cite{Ward1963}, ColNMF \cite{Singh2008}, NMF \cite{Lee1999}, LDA \cite{Blei2003}. Additionally, we extend CMNMF with gene pathways prior which we call Supervised CMNMF (S-CMNMF) on multi-label gene signal pathway classification task, the AUC score demonstrates the advantages of S-CMNMF over LP \cite{Raghavan2007}, supervised NMF and supervised ColNMF.
+\begin{figure}[!t]
+  \centering
+  \begin{minipage}{.80\linewidth}
+  \centering
+    \includegraphics[width=\linewidth]{DrawPictures/module2.pdf}
+  \end{minipage}
+  \caption{Illustration of the CMNMF framework. (a) The gene-phenotype \\ associations are separated to 2 matrices by the level of phenotype ontologies. \\These 2 matrices share the same gene set as their first dimensions. (b)\\ Consistent constraint on factorized gene clusters. (c) Hierarchical mapping \\ constraints on the phenotype ontologies from parent and child levels.}
+  \label{fig:model}
+\end{figure}
+%The remainder of the paper is organized as follows. We present our consistent multiple nonnegative matrix factorization framework in Section 2. Section 3 reports some experiments and discussions. Followed with conclusion and future work in section 4.
+
+\section*{Method}
+The notations and definitions used in the article are specified in Table \ref{Tab:Notations}. We denote $\bm{A}_{(n \times m)}$ as a binary matrix for storing gene-phenotype associations by $n$ genes and $m$ phenotypes, where $\bm{A}_{ij}$ is set to 1 for a known association and 0 otherwise. The goal of factorizing matrix $\bm{A}$ is to derive gene functional clusters $\bm{G}_{(n \times k)}$ based on gene-phenotype associations. The loss of it can be defined as $min _{\bm{P},\bm{G}} ||\bm{A}-\bm{GP}||^{2}_{F}$, where $\bm{G}$ and $\bm{P}$ denotes gene clusters and phenotype clusters, respectively.
+
+However, the NMF in this form cannot make full use of the hierarchical mapping information of phenotype ontology. To address this problem, we design a loss function with two components. The first component is used for penalizing the inconsistence of factorizations on gene-phenotype associations from different phenotype levels (See Figure \ref{fig:model}(a)). In other words, the gene clustering results on parent and child phenotype ontology levels should be consistent (See Figure \ref{fig:model}(b)). The second component is a hierarchical mapping constraint with phenotype ontologies from parent level and child level, as shown in Figure \ref{fig:model}(c). With it, the clusters of phenotype ontologies from different levels should fit the hierarchical architecture. By optimizing these two components, a CMNMF (Consistent Multiple Non-negative Matrix Factorization) algorithm is proposed to obtain consistent gene clusters by factorizing multiple related gene-phenotype association matrices.
+
+%Figure \ref{fig:model} illustrates the framework of the Consistent Multiple Non-negative Matrix
+%Factorization with hierarchical constraints of phenotype ontology to identify gene modules.
+%We designed an objective function with three components. The first and second components are based on non-negative genome-phenome association data with respect to distinct level phenotype ontologies. The third one considers the effects of interactions from phenotype ontology. By optimizing this objective function, we obtain a consistent decomposition of two genome-phenome association matrix, which reveals gene functional modules inherent in genome-phenome association data jointly.
+\begin{table}[t!]
+ \caption{Summary of notations.}\label{Tab:Notations}
+%\processtable{Summary of notations.\label{Tab:01}} {
+\begin{tabular}{|l|l|}
+    \hline
+    Notations & Explanations\\
+    \hline\hline
+    $\bm{A}$ & Genome-phenome association matrix with phenotype \\
+    & from parent and child level\\
+    $\bm{A}_1$ & Genome-phenome association matrix with phenotype\\
+    & ontology from parent level\\
+    $\bm{A}_2$ & Genome-phenome association matrix with phenotype\\
+    & ontology from child level\\
+    $\bm{G}$ & Gene cluster membership\\
+    $\bm{P}$ & Phenotype cluster membership\\
+    $\bm{G}_0$ & Annotated gene cluster membership\\
+    $\bm{P}_1$ & Phenotype cluster membership of parent level\\
+    $\bm{P}_2$ & Phenotype cluster membership of child level\\
+    $\bm{M}$ & Phenotype ontologies relationship\\
+    $n$ & Number of disease genes\\
+    $m$ & Number of phenotype ontology in parent and child level\\
+    $k$ & Number of latent clusters(e.g. classes)\\
+    $m_1$ & Number of phenotype ontology in parent level\\
+    $m_2$ & Number of phenotype ontology in child level\\
+    \hline
+  \end{tabular}
+\end{table}
+
+\subsection*{\textbf{Loss Functions for Penalizing Inconsistence}}
+Motivated by above consistent assumption, we extract phenotype ontologies from two adjacent levels, and two gene-phenotype association matrices $(\bm{A}_1)_{n\times m_1}$ and $(\bm{A}_{2})_{n\times m_2}$ are extracted from gene-phenotype text file. We assume that the factorizations on  $\bm{A}_{1}$ and $\bm{A}_{2}$ for the gene cluster should be consistent, although the genes are annotated by adjacent level phenotype ontologies. In our work, we use a common basis gene cluster matrix $\bm{G}_{n\times k}$ to achieve this goal. The representation of the data can be derived by optimizing the following quadratic objective function:
+\begin{equation}
+{L_C} = \mathop {\min }\limits_{\bm{G},{\bm{P}_1},{\bm{P}_2}} \left\| \bm{A}_1 - \bm{G{P}}_1 \right\|_F^2 + \alpha \left\| {\bm{A}_2} - \bm{GP}_2 \right\|_F^2,
+\end{equation}
+where $\alpha$ is a parameter to balance the factorization error from different levels.
+
+For the hierarchical mapping constraints on phenotype ontologies, loss function in Equation (\ref{equ:L_H}) is used to encourage the interactions between phenotypes from parent level and child level.
+\begin{equation}\label{equ:L_H}
+{L_H} = \sum\limits_{ij} {{\bm{M}_{ij}}} {(\bm{P}_1^{(i)})^T}\bm{P}_2^{(j)} = tr({\bm{P}_1}\bm{MP}_2^T),\
+\end{equation}
+where $\bm{M}_{m_1\times m_2}$ denotes the hierarchical mapping relation matrix between phenotype ontologies from adjacent levels. $\bm{M}_{ij}=1$, if there is a parent-child relationship between phenotype $i$ and phenotype $j$, otherwise 0. We enforce hierarchical mapping constraints by maximizing the mapping between the phenotype ontologies in gene-phenotype network $\bm{A}_{1}$ and $\bm{A}_{2}$.
+
+By combining these two components, the loss function can be given as follows:
+\begin{equation}\label{equ:R-CMNMF}
+\begin{split}
+{L} =& \left\| \bm{A}_1 - \bm{G{P}}_1 \right\|_F^2 + \alpha \left\| {\bm{A}_2} - \bm{GP}_2 \right\|_F^2-\beta tr({\bm{P}_1}\bm{MP}_2^T)\\
+&\mathrm{s.t. }\quad \sum_j\bm{G}_{ij}=1,\quad \sum_i{(\bm{P}_1)}_{ij}=1,\quad \sum_i{(\bm{P}_2)}_{ij}=1
+\end{split}
+\end{equation}
+where $\alpha$, $\beta$ are parameters to balance the tradeoff between the two components.
+%\subsection*{\textbf{Regularization Constraint}}
+%Since the known gene-phenotype associations are sparse and only cover a part of genes and phenotypes, the regularization with $L_2$ norm is proposed to control the complexity of $\bm{G}$, $\bm{P}_1$ and $\bm{P}_2$. The coefficients ${\lambda_1}$ and $\lambda_2$ balance the regularization terms. Finally, the framework of regularized CMNMF with regularization constraint is to minimize the loss function formulated as follows:
+%\begin{equation}\label{equ:R-CMNMF}
+%\begin{split}
+%%\mathop {\min }\limits_{G,{P_1},{P_2}}
+%L=
+%&\left\| {{\bm{A}_1} - \bm{G}{\bm{P}_1}} \right\|_F^2 + \alpha \left\| {{\bm{A}_2} - \bm{G}{\bm{P}_2}} \right\|_F^2 - \beta  tr({\bm{P}_1}\bm{MP}_2^T)\\
+%&{\rm{ + }}{\lambda _1}\left\| \bm{G} \right\|_F^2{\rm{ + }}{\lambda _2}(\left\| {{\bm{P}_1}} \right\|_F^2{\rm{ + }}\left\| {{\bm{P}_2}} \right\|_F^2)\\
+%&\mathrm{s.t. }\quad \sum_j\bm{G}_{ij}=1,\quad \sum_i{(\bm{P}_1)}_{ij}=1,\quad \sum_i{(\bm{P}_2)}_{ij}=1
+%\end{split}
+%\end{equation}
+%&\mathrm{s.t. }\qquad {\rm{G}} \ge {\rm{0, }}\quad{{\rm{P}}_1}{\rm{, }} {{\rm{P}}_2} \ge 0
+%where $\alpha ,\gamma ,{\lambda _1},{\lambda _2}$ are parameters to balance the trade of each component.
+
+\subsection*{\textbf{The CMNMF Algorithm}}
+To minimize the loss function in Equation (\ref{equ:R-CMNMF}), an alternative iterative schema is adopted for proposed CMNMF algorithm. It solves the problem with respect to one variable while fixing the other variables alternatively. As in the original NMF, the loss function in Equation (\ref{equ:R-CMNMF}) is not convex in $\bm{G}$, $\bm{P}_1$, $\bm{P}_2$ jointly, but it is convex in $\bm{G}$ for fixed $\bm{P}_1$ and $\bm{P}_2$, vice versa. In this subsection, the computations of $\bm{G}$, $\bm{P}_1$ and $\bm{P}_2$ are given, the CMNMF algorithm is outlined in \textbf{Algorithm \ref{alg:CMNMF}}.
+%We extend the optimization algorithms of \cite{Singh2008}. The strategy to solve the problem is to optimize the objective loss function with respect to one variable while keep the other variables fixed.
+
+\subsubsection*{\textbf{Computation of $G$ in CMNMF}}
+We fix variables $\bm{P}_1$ and $\bm{P}_2$,
+ %solving Eq(\ref{equ:S-CMNMF}) with respect to $G$ is equivalent to minimizing the following function:
+%\begin{equation}\label{obj:obj_G}\nonumber
+%\begin{split}
+%&L(G)=\left\| {{A_1} - GP_1} \right\|_F^2 + \alpha \left\| {{A_2} - G{P_2}} \right\|_F^2
+%     +{\lambda _1}\left\| G \right\|_F^2\\
+%     &\mathrm{s.t. }\quad \sum_jG_{ij}=1,G\ge 0
+%\end{split}
+%\end{equation}
+the partial derivative of Equation (\ref{equ:R-CMNMF}) with respect to $\bm{G}$ is:
+\begin{equation}\label{equ:G_gradient}\nonumber
+\begin{split}
+\frac{\partial{L}}{\partial{\bm{G}}}=
+&-2(\bm{A}_1{\bm{P}_1^T} - \bm{G}{\bm{P}_1}{\bm{P}_1^T})-2\alpha(\bm{A}_2{\bm{P}_2^T} - \bm{G}{\bm{P}_2}{\bm{P}_2^T})
+%+2\lambda_1\bm{G}
+\end{split}
+\end{equation}
+%where $\bm{\Phi}$ is the Lagrange multiplier matrix, using the Karush-Kuhn-Tucher (KKT) conditions $\bm{\Phi}_{ij}\bm{G}_{ij}=0$,
+the multiplicative update rule is:
+\begin{equation}\label{equ:updating_G}\nonumber
+\bm{G}_{ij}\leftarrow \bm{G}_{ij}
+\frac{(\bm{A}_1\bm{P}_1^T+\alpha \bm{A}_2\bm{P}_2^T)_{ij}}
+{(\bm{GP}_1\bm{P}_1^T+\alpha \bm{GP}_2\bm{P}_2^T
+%+\lambda_1\bm{G}
+)_{ij}}
+\end{equation}
+To satisfy the equality constraint, we normalize $\bm{G}_{ij}$ as $\bm{G}_{ij}\leftarrow\frac{\bm{G}_{ij}}{\sum_{j}\bm{G}_{ij}}$.
+%\begin{equation}\label{equ:updating_G}\nonumber
+%G_{ij}\leftarrow \frac{G_{ij}}{\sum_{j}G_{ij}}
+%\end{equation}
+
+%%%%%%%%%%%%%%% Computation of $P_1$ and $P_2$ %%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{\textbf{Computation of $\bm{P}_1$ and $\bm{P}_2$ in CMNMF}}
+When $\bm{G}$ is computed,
+%solving Eq(\ref{equ:S-CMNMF}) with respect to $P_1$  and $P_2$ is equivalent to minimizing the following function:
+%\begin{equation}\label{equ:obj_P1}\nonumber
+%\begin{split}
+%&L(P_{1})=\left\| {{A_1} - GP_1} \right\|_F^2 - \gamma tr({P_1}MP_2^T)+{\lambda _2}(\left\| {{P_1}} \right\|_F^2 )\\
+%   &\mathrm{s.t. }\quad \sum_i (P_1)_{ij}=1,P_1\ge 0\\
+%&L(P_{2})=\alpha\left\|A_2 - GP_2\right\|_F^2 - \gamma tr(P_1MP_2^T)+{\lambda _2}(\left\|P_2\right\|_F^2 )\\
+%   &\mathrm{s.t. }\quad \sum_i (P_2)_{ij}=1,P_1\ge 0
+%\end{split}
+%\end{equation}
+the partial derivative of Equation (\ref{equ:R-CMNMF}) with respect to $\bm{P}_1$ and $\bm{P}_2$ are:
+\begin{equation}\label{equ:P1_gradient}\nonumber
+\begin{split}
+&\frac{\partial{L(\bm{P}_1)}}{\partial{\bm{P}_1}}=
+-2(\bm{G}^T\bm{A}_1-{\bm{G}^T\bm{GP}_1})-\beta \bm{P}_2\bm{M}^T %+2\lambda_2\bm{P}_1
+\\
+&\frac{\partial{L(\bm{P}_2)}}{\partial{\bm{P}_2}}=
+-2\alpha(\bm{G}^T\bm{A}_2-{\bm{G}^T\bm{GP}_2})-\beta \bm{P}_1\bm{M} %+2\lambda_2\bm{P}_2
+\end{split}
+\end{equation}
+%where $\bm{\Omega}$ and $\bm{\Psi}$ are the Lagrange multiplier matrices, using the Karush-Kuhn-Tucher (KKT) conditions $\bm{\Omega}_{ij}(\bm{P}_1)_{ij}=0 , \bm{\Psi}_{ij}(\bm{P}_2)_{ij}=0$,
+the multiplicative update rule is (note that when we compute $\bm{P}_1$, we take $\bm{P}_2$ fixed, vise versa):
+\begin{equation}\label{updating_P}\nonumber
+\begin{split}
+&(\bm{P}_1)_{ij}\leftarrow (\bm{P}_1)_{ij}
+\frac{(\bm{G}^T\bm{A}_1+\frac{1}{2}\beta \bm{P}_2\bm{M}^T)_{ij}}
+{(\bm{G}^T\bm{GP}_1
+%+\lambda_2\bm{P}_1
+)_{ij}}\\
+&(\bm{P}_2)_{ij}\leftarrow (\bm{P}_2)_{ij}
+\frac{(\alpha \bm{G}^T\bm{A}_2+\frac{1}{2}\beta \bm{P}_1\bm{M})_{ij}}
+{(\alpha \bm{G}^T\bm{GP}_2
+%+ \lambda_2\bm{P}_2
+)_{ij}}
+\end{split}
+\end{equation}
+To satisfy the equality constraint, we normalize $(\bm{P}_1)_{ij}$ as $(\bm{P}_1)_{ij}\leftarrow \frac{(\bm{P}_1)_{ij}}{\sum_{i}(\bm{P}_1)_{ij}}
+$ and $(\bm{P}_2)_{ij}$ as $(\bm{P}_2)_{ij}\leftarrow \frac{(\bm{P}_2)_{ij}}{\sum_{i}(\bm{P}_2)_{ij}}$.
+%as
+%\begin{equation}\label{equ:updating_P2}\nonumber
+%\begin{split}
+%(P_1)_{ij}\leftarrow \frac{(P_1)_{ij}}{\sum_{i}(P_1)_{ij}}, \quad
+%(P_2)_{ij}\leftarrow \frac{(P_2)_{ij}}{\sum_{i}(P_2)_{ij}}
+%\end{split}
+%\end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%% Computation of $P_2$ %%%%%%%%%%%%%%%%%%%%%%%%%
+%\subsection*{\textbf{Optimization framework of Supervised CMNMF}}
+%By considering prior gene classification prior, our proposed CMNMF can be utilized for another task ,multi-label gene classification problem as well. We call it Supervised CMNMF (S-CMNMF) as including gene classification prior. Thus, the loss function of S-CMNMF can be rewrite as:
+%\begin{equation}\label{obj:Sup-CMNMF}
+%\begin{split}
+%%\mathop {\min }\limits_{G,{P_1},{P_2}}
+%L_s =
+%&\left\| {{\bm{A}_1} - \bm{G}{\bm{P}_1}} \right\|_F^2 + \alpha \left\| {{\bm{A}_2} - \bm{G}{\bm{P}_2}} \right\|_F^2 +\beta\left\| {\bm{G} - {\bm{G}_0}}\right\|_F^2\\
+%&- \gamma tr({\bm{P}_1}\bm{MP}_2^T){\rm{ + }}{\lambda _1}\left\| \bm{G} \right\|_F^2{\rm{ + }}{\lambda _2}(\left\| {{\bm{P}_1}} \right\|_F^2{\rm{ + }}\left\| {{\bm{P}_2}} \right\|_F^2)\\
+%&\sum_j\bm{G}_{ij}=1,\quad \sum_i{(\bm{P}_1)}_{ij}=1,\quad \sum_i{(\bm{P}_2)}_{ij}=1
+%%\mathrm{s.t. }\qquad {\rm{  G}} \ge {\rm{0, }}\quad{{\rm{P}}_1}{\rm{, }} {{\rm{P}}_2} \ge 0,
+%\end{split}
+%\end{equation}
+%
+%\subsubsection*{\textbf{Computation of $\bm{G}$ in Supervised CMNMF}}
+%We fix variables $\bm{P}_1$ and $\bm{P}_2$,
+%%solving Eq(\ref{obj:Sup-CMNMF}) with respect to $G$ is equivalent to minimize the following function:
+%%\begin{equation}\label{obj:sup_G}\nonumber
+%%\begin{split}
+%%&L_{s}(G)=\left\| {{A_1} - GP_1} \right\|_F^2 + \alpha \left\| {{A_2} - G{P_2}} \right\|_F^2
+%%     +\beta\left\| {G - {G_0}}\right\|_F^2+{\lambda _1}\left\| G \right\|_F^2\\
+%%     &\mathrm{s.t. }\quad \sum_jG_{ij}=1,G\ge 0
+%%\end{split}
+%%\end{equation}
+%the partial derivative of Equation (\ref{obj:Sup-CMNMF}) with respect to $\bm{G}$ is:
+%\begin{equation}\label{equ:G_gradient}\nonumber
+%\begin{split}
+%\frac{\partial{L_s}}{\partial{\bm{G}}}=
+%&-2(\bm{A}_1{\bm{P}_1^T} - \bm{G}{\bm{P}_1}{\bm{P}_1^T})-2\alpha(\bm{A}_2{\bm{P}_2^T} - \bm{G}{\bm{P}_2}{\bm{P}_2^T})+2\beta(\bm{G}-\bm{G}_0)+2\lambda_1\bm{G}+\bm{\Phi}
+%\end{split}
+%\end{equation}
+%Using the KKT conditions $\bm{\Phi}_{ij}\bm{G}_{ij}=0$, the multiplicative update rule is:
+%\begin{equation}\label{equ:updating_G}\nonumber
+%\bm{G}_{ij}\leftarrow \bm{G}_{ij}
+%\frac{(\bm{A}_1\bm{P}_1^T+\alpha \bm{A}_2\bm{P}_2^T+\beta \bm{G}_0)_{ij}}
+%{(\bm{GP}_1\bm{P}_1^T+\alpha \bm{GP}_2\bm{P}_2^T+\lambda_1\bm{G}+\beta \bm{G})_{ij}}
+%\end{equation}
+%To satisfy the equality constraint, we normalize $\bm{G}_{ij}$ in rows.
+%% as
+%%\begin{equation}\label{equ:updating_G}\nonumber
+%%G_{ij}\leftarrow \frac{G_{ij}}{\sum_{j}G_{ij}}
+%%\end{equation}
+%
+%\subsubsection*{\textbf{Computation of $\bm{P}_1$ and $\bm{P}_2$ in Supervised CMNMF}}
+%Because the updating rules of supervised CMNMF for $\bm{P}_1$ and $\bm{P}_2$ are the same as CMNMF above, we would not present it here again.
+
+%\subsection*{\textbf{The Algorithm of CMNMF and Supervised CMNMF}}
+%The complete CMNMF algorithm is presented in \textbf{Algorithm \ref{alg:CMNMF}}. Our algorithm CMNMF can optimize the objective function iteratively by updating one variable while keep others fixed alternatively. As in the original NMF model, the cost of Equation (\ref{equ:NMF}) is not convex in $\bm{G}$ and $\bm{P}$ jointly, but it is convex in $\bm{G}$ for fixed $\bm{P}_1$ and $\bm{P}_2$, vice versa. the Lagrange multiplier method can be applicable here to give an iterative algorithm to guarantee the algorithm to converge to a local minima \cite{Zunyan2014}. For supervised CMNMF algorithm, we just need to change the update rule for $\bm{G}$ as we talked in \textup{Computation of $\bm{G}$ in Supervised CMNMF} part, the rest is the same as CMNMF.
+\begin{algorithm}[t]
+\caption{\textbf{CMNMF}}\label{alg:CMNMF}
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+\label{alg:pf}
+\begin{algorithmic}[1]
+\REQUIRE gene-phenotype association matrix $\bm{A}_1$, $\bm{A}_2$, number of cluster dimensions $K$, and parameter $\alpha$,$\beta$,$\gamma$,$\lambda_1$,$\lambda_2$,
+\ENSURE \text{model parameters} ${\bm{G}}, {\bm{P}_1}, {\bm{P}_2}$
+%\STATE $P \leftarrow \{(i,j)|q_i=q_j,y_i\succ y_j\}$
+\STATE ${\bm{G}},{\bm{P}_1},{\bm{P}_2}$ $\leftarrow$ random values
+%\STATE \text{stop$\_$condition:iterate number is more than $N$ or the change of objective function's value is less than $\varepsilon$}
+%\STATE $ite = 1$
+\REPEAT
+    \STATE Update $\bm{G}_{ij}\leftarrow \bm{G}_{ij}\frac{(\bm{A}_1\bm{P}_1^T+\alpha \bm{A}_2\bm{P}_2^T)_{ij}}{(\bm{G}\bm{P}_1\bm{P}_1^T+\alpha \bm{G}\bm{P}_2\bm{P}_2^T %+\lambda_1\bm{G}
+    )_{ij}}    $
+    \STATE Normalize $\bm{G}_{ij}\leftarrow \frac{\bm{G}_{ij}}{\sum_{j}\bm{G}_{ij}}$
+    \STATE Update $(\bm{P}_1)_{ij}\leftarrow (\bm{P}_1)_{ij}\frac{(\bm{G}^T\bm{A}_1+\frac{1}{2}\gamma \bm{P}_2\bm{M}^T)_{ij}}{(\bm{G}^T\bm{G}\bm{P}_1
+    %+\lambda_2\bm{P}_1
+    )_{ij}}$,
+    $(\bm{P}_2)_{ij}\leftarrow (\bm{P}_2)_{ij}\frac{(\alpha \bm{G}^T\bm{A}_2+\frac{1}{2}\gamma \bm{P}_1\bm{M})_{ij}}
+    {(\alpha \bm{G}^T\bm{G}\bm{P}_2
+    %+ \lambda_2\bm{P}_2
+    )_{ij}}$
+    \STATE Normalize $(\bm{P}_1)_{ij}\leftarrow \frac{(\bm{P}_1)_{ij}}{\sum_{i}(\bm{P}_1)_{ij}}, \quad
+(\bm{P}_2)_{ij}\leftarrow \frac{(\bm{P}_2)_{ij}}{\sum_{i}(\bm{P}_2)_{ij}}$
+
+\UNTIL convergence
+\RETURN ${\bm{G}},{\bm{P}_1},{\bm{P}_2}$
+\end{algorithmic}
+\end{algorithm}
+
+\section*{Results and Discussion}
+
+We first demonstrated proposed CMNMF and NMF on sampled MGI mouse gene-phenotype association matrix. We then executed CMNMF and seven baseline methods on the whole association matrix for comparing the performance of mining mouse gene functional modules. A statistical analysis of clustering result shows the improvement by using the hierarchical information of phenotype ontologies. Moreover, a preliminary supervised CMNMF is proposed for showing the generalization of proposed model. Finally, gene ontology enrichment analysis is conducted to evaluate the biological significance of mined gene modules.
+
+\subsection*{\textbf{Data Preparation and Evaluation}}
+ The mouse gene-phenotype ontology associations are extracted from file ``MGI\_Geno\_Disease.rpt" (December-2015) downloaded from MGI \footnote{ftp://ftp.informatics.jax.org/pub/reports/MGI\_Geno\_Disease.rpt}, in which we have 7029 gene-phenotype associations at level 4 and 8588 associations at level 5. 2342 ontology terms at level 4 (parent level) and 3257 ontology terms at level 5 (child level)  are selected from the 11471 MP terms in the ``MPheno\_OBO.ontology'' (November-2015) \footnote{ftp://ftp.informatics.jax.org/pub/reports/MPheno\_OBO.ontology}. 3583 hierarchial mapping relations (adjacent parent-child relationships) between phenotypes in level 4 and level 5 are kept as $M$.
+
+In our gene module clustering problem,
+after removing phenotypes, which neither has relationships with any disease genes in gene-phenotype association matrix nor has relationships with any phenotypes in parent or child levels in hierarchial mapping relations, then we generate a dataset containing 1354 disease genes and 5245 phenotypes.
+
+To evaluate the clustering performance for CMNMF, we crawled 280 mouse gene pathways from KEGG\footnote{http://www.genome.jp/kegg/pathway.html} and selected 225 of them as the ``ground truth'' of gene modules. We intersect each pathway with genes in gene-phenotype association matrix, if the common genes for this pathway are less than 3, we hold this pathway out. At last, we get 225 pathways in total. Genes in a signal pathway can be considered as a gene functional module (or a gene cluster).
+
+In the leave-one-out cross-validation experiment for S-CMNMF, after removing genes not present in the gene pathways, and choosing the phenotypes that has relationships with selected genes and the phenotypes that have parent-child relationships, we generated a dataset with 760 genes and 5245 phenotypes.
+\subsection*{\textbf{CMNMF on Sampled Data}}
+\begin{figure}[!h]
+  \centering
+  \begin{minipage}[b]{.40\linewidth}
+   \includegraphics[width=\linewidth]{DrawPictures/v_4.pdf}
+    \centerline{(a)}
+  \end{minipage}
+   \begin{minipage}[b]{.45\linewidth}
+   \includegraphics[width=\linewidth]{DrawPictures/Hierarchica.pdf}
+    \centerline{(b)}
+  \end{minipage}
+  \hfil
+  \begin{minipage}{.30\linewidth}
+   \includegraphics[width=\linewidth]{DrawPictures/v20.pdf}
+    \centerline{(c)}
+  \end{minipage}
+  \hfil
+  \begin{minipage}{.3\linewidth}
+   \includegraphics[width=\linewidth]{DrawPictures/v23.pdf}
+    \centerline{(d)}
+  \end{minipage}
+  \hfil
+  \begin{minipage}{.3\linewidth}
+   \includegraphics[width=\linewidth]{DrawPictures/v24.pdf}
+    \centerline{(e)}
+  \end{minipage}
+  \caption{Illustration of sampled data, rows stand for genes, columns stand for \protect\\
+  phenotype. If there is a association between a gene and a phenotype, the \protect \\
+  corresponding position is colored, otherwise it's uncolored. (a) a overview of \protect \\
+  association matrix of sampled data; (b) Illustration of hierarchical information \protect \\
+  of phenotype ontology we used in our model; (c) Clustering result of NMF; (d)\protect \\
+  Clustering result of ColNMF($\gamma$=1); (e) Clustering result of CMNMF. In (c), (d) \protect \\
+  and (e), each gene group is characterized with three most significant GO terms\protect \\
+   at the bottom.
+   }
+  \label{fig:sampled_result}
+\end{figure}
+To illustrate the effect of the consistent constraint and hierarchical mapping constraint, we demonstrate proposed CMNMF, NMF and ColNMF on a small sampled gene-phenotype association matrix from MGI dataset. The overview of sampled data matrix is shown in Figure\ref{fig:sampled_result} (a), in which 9 genes from 3 pathways are selected. Specifically, Irs2, Pdx1, Pik3r1 are from pathway MMU7930 (Type-\uppercase\expandafter{\romannumeral2} diabetes mellitus). Hras, Braf, Ctnnb1 are from MMU5212 (Prostate cancer). Wnt7a, Bmp4, Shh are from MMU5217 (Basal cell carcinoma). The hierarchical relations between 9 selected genes' associated phenotype ontologies are shown in Figure\ref{fig:sampled_result} (b). We expect that the genes in one cluster tend to be the members of one gene signal pathway with the help of two constraints.
+
+The clustering results from factorization by NMF, ColNMF and CMNMF are presented in Figure\ref{fig:sampled_result} (c-e), respectively. Note that NMF with the consistent constraint (\emph{i.e.} ColNMF), which is a special case with $\gamma=0$ in our CMNMF, can improve the clustering result significantly. 3 pairs are right. For CMNMF, 9 pairs are right. is better than original NMF on combined association matrix.
+
+
+Figure\ref{fig:sampled_result} (b) illustrates the model we used in CMNMF, the upper matrix means the associations between genes and phenotypes from parent level, the lower matrix means the associations between genes and phenotypes from child level, the different color dash lines means parent-child phenotype relationships in different groups.
+%The three phenotypes used in $A_1$ are from parent level, the other six phenotypes used in $A_2$ are from child level. Fig.\ref{fig:sampled_raw_data}(c) is a overview of all genes and phenotypes, we denote this data as $(A_3)_{9\times9}$.
+To be more specific, we sampled the common nine genes from three pathways (or groups) ( For each group, there are two genes associating with phenotypes in the child level (like in Figure \ref{fig:sampled_result}(b), Pdx1 and Pik3r1, from pathway mmu7930, are interacting with MP5559, MP5560, which are in the child level of the phenotype ontology hierarchical tree), and another gene associating with the parent phenotypes (Irs2, from pathway mmu7930, is interacting with MP188, which is in the parent level). The task is to cluster the three genes, which are coming from the same pathway, into a same group.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+We apply NMF, ColNMF and CMNMF to the sampled data, show the results in Figure \ref{fig:sampled_result}(c), (d) and (e) respectively. Figure \ref{fig:sampled_result}(c) tells that NMF method gives a random clustering results, Figure \ref{fig:sampled_result}(d) tells the fact that we use a common basis matrix $G$ while factorizing $A_1$ and $A_2$ simultaneously, we can see that in each gene group module, there exists misclassified genes (such like, Ctnnb1 shouldn't be grouped with Irs2 and Pdx1, it's supposed to classified with Hras and Braf). After we adding the hierarchical information to our model, just as Figure \ref{fig:sampled_result}(e) shows, all the genes are classified into three groups perfectly. It demonstrates that the two constraints working together can get the best performance. The reasons for the performance improvement are that with the consistent constraint, CMNMF can incorporate information from two levels and take advantage of the complement characteristic of information from different levels to overcome the shortcoming of lacking enough information from only one level and the hierarchy mapping constraint can help restrict cluster results according to the structure of data which narrows the range of solution space so that we can get a better solution.
+%\subsection*{\textbf{2 Functional gene module similarity analysis}}
+%\begin{figure}[!h]
+%  \centering
+% \includegraphics[width=0.8\textwidth]{DrawPictures/pathwaySimi.eps}
+%  \caption{$gene\ group\ in\ pathway's\ similarity\ under\ GO-term  $}\label{fig:alpha}
+%\end{figure}
+
+\subsection*{\textbf{Comparison with Baseline Methods by Mining Gene Modules}}
+
+CMNMF is compared to HAC (Hierarchical Agglomerative Clustering) \cite{Ward1963}, KMeans, Kernel-Kmeans \cite{Dhillon2004}, LDA \cite{Blei2003}, NMF \cite{Lee1999}, HMF (Hierarchical Matrix Factorization) \cite{AliMashhoori2012} and ColNMF (Collective NMF) \cite{Singh2008} (in fact, CMNMF degrades to ColNMF when $\gamma=0$ ) by clustering genes. To be fair, all matrix factorization-based methods are implemented with sparse and non-negative constraints.
+
+For CMNMF, HMF and ColNMF, we need to separate gene-phenotype assocations matrix to two matrices according to the levels of phenotype ontologies for CMNMF, HMF and ColNMF (Only phenotype ontologies in level 4 and 5 are adopted in the experiment). The combined matrix is used for the other baselines. The details of parameter tuning for baselines are given in {\emph{Supporting Information (SI) Parameter Tuning}}.
+
+For methods LDA, NMF, HMF, ColNMF and CMNMF, the gene clustering results are row-normalized by using z-score. For each gene, it can belong to multiple clusters, as it can participate in a couple of pathways, so we take the following strategy to predict the clusters a gene belongs to: first, for cluster distributions of a gene, we sort the values in a descending order; then we choose the top k clusters, of which the sum of the values is closest to 0.9, as the modules this gene belongs to.
+
+\begin{table}[!t]
+\centering
+\caption{Performance results of different methods on $F_1$, $Jaccard\ Index$, $Rand\ Index$, $\mathcal{M}_{sim}$}\label{tab:measurements}
+\begin{tabular}{c|cccc}
+\hline
+&$F_1$ measure &Jaccard Index& Rand Index&$\mathcal{M}_{sim}$\\
+\hline
+HAC&0.0738&0.0383&0.9688&1.5523\\
+%\hline
+Kmeans&0.0536&0.0290&0.9683&1.4207\\
+%\hline
+Kernel-Kmeans&0.0594&0.0306&0.9677&1.3514\\
+%\hline
+LDA&0.0978&0.0525&0.9618&1.1609\\
+%\hline
+NMF&0.093&0.0488&\textbf{0.9740}&1.3048\\
+HMF&0.0904&0.0474&0.9686&0.8982\\
+%\hline
+ColNMF (CMNMF with $\gamma=0$)&0.0942&0.0495&0.9738&1.3479\\
+%\hline
+CMNMF ($\alpha=1$ and $\gamma=10$)&\textbf{0.1190}& \textbf{0.0585}&{0.9701}& \textbf{1.6453}\\
+%CMNMF(1)&0.1023&0.0537&0.9604&0.6053&\textbf{16.0618}\\
+\hline
+\end{tabular}
+\end{table}
+
+The $\mathcal{M}_{sim}$ \cite{Bordino2010}, an internal clustering evaluation measure (\emph{{see SI $\mathcal{M}_{sim}$}}), is used for evaluating the performance of clustering genes by factorizing gene-phenotype associations matrix. The higher the $\mathcal{M}_{sim}$, the better the performance. For $\mathcal{M}_{sim}$, genes are featured with annotated GO terms, and $FS_{simGIC}(G_k,G_l)$ \cite{Teng2013} is used to measure the similarity between gene $G_k$ and $G_l$ by GO terms. In other words, genes are clustered well if the GO annotations of genes in a cluster are similar.
+
+$F_1$ measure, $Jaccard\ Index$, and $Rand\ index$ ({see \emph{SI Measurement Definition}}) are selected to validate whether the clustering results can make good biological sense. 225 mouse gene pathways from KEGG are selected as test criteria although there is unconformity between MGI gene-phenotype associations and KEGG pathways. For these three external evaluation measurements, the higher values, the better results.
+
+The results are reported in Table \ref{tab:measurements}, which are produced by the best parameters of each method and we take the average value of 10 times of experiments for each method. Clearly, CMNMF performs significantly better than all the other methods at significance level 0.01 with $F_1$ measure, $Jaccard\ Index$, and $\mathcal{M}_{sim}$ (see \emph{SI Significant Analysis}). In particular, the consistent constraint works well by comparing convenient NMF and ColNMF. Moreover, CMNMF ($\alpha=1$ and $\gamma=10$) beats ColNMF ($\emph{i.e.}$ CMNMF with $\gamma=0$) because of the adoption of hierarchical mapping constraint. However, NMF outperforms other methods with $Rand\ Index$ measure. We notice that true negative gene pairs are used when $Rand\ Index$ value is calculated, that is to say $Rand\ Index$ considers the number of gene pairs that do not appear in any pathways, which is not the situation we focus on.
+
+%We take a significant analysis of $F_1$ measure in Table \ref{tab:measurements} to validate effectiveness of our CMNMF. The Student's t-test results (see {\color{red} SI Significant Analysis}) of each pair methods listed in Table \ref{tab:measurements} show that the result of CMNMF is significantly better than all the baselines (p-value $<$ 0.01).
+%\underline{but the number of TN pairs is way great than others and dominates the result of $Rand\ Index$. As we all know, the point we care about is whether two genes co-occur in a pathway rather than two genes show up in different pathways, thus higher $Rand\ Index$ does not reflect the performance of clustering results.}
+%%%%%%%%%%%%%%%%%%
+
+\subsection*{\textbf{Parameter Tuning}}
+\begin{figure}[!h]
+  \begin{minipage}[t]{0.7\linewidth}
+    \includegraphics[width=\linewidth,origin = l]{DrawPictures/alpha-gama.pdf}
+  \end{minipage}
+  \caption{$F_1$ score under different $\alpha$ and $\beta$ combination}
+  \label{fig:alpha_gamma}
+\end{figure}
+
+In this part, we give discussions on how parameters $\alpha$ and $\beta$ affect the clustering results. We choose $F_1$ measure as a criteria to tune parameters, because $F_1$ measure is a  harmonic average of precision and recall, it can avoid grouping genes into a single cluster that behaves differently than expected.
+
+The $\alpha$ in our CMNMF model, balances the contributions from different levels is an important parameter. When $\alpha$ is close to 0, the model degrades into NMF on level 4 and when $\alpha$ is big enough information from level 5 dominates the model. The $\beta$ controls the effects of hierarchical information of phenotype ontologies, when $\beta$ is set to 0, the models does not take hierarchical information into consideration, in this situation, our model degrades to ColNMF model, the higher $\beta$ value, the more influence of hierarchical information has.
+ The performance of CMNMF with different $\alpha$ and $\beta$ combination is shown in Figure \ref{fig:alpha_gamma}. We search $\alpha$ in \{0.001, 0.01, 0.1, 1, 10, 100, 1000\} and $\beta$ in \{0, 0.001, 0.01, 0.1, 1, 10, 100\}, darker colour stands the bigger $F_1$ score under the corresponding $\alpha$ and $\beta$ combination.
+
+It can be seen from Figure \ref{fig:alpha_gamma}, the colour is getting darker with $\beta$ growing under almost every $\alpha$ value and the $F_1$ scores peak at $\beta=10$, which demonstrates the hierarchical information has general positive effects. After that, as $\beta$ increasing, $F_1$ score decreases for most $\alpha$. In our model, the best performance of $F_1$ measure is achieved when $\alpha=1$ and $\beta = 10$. We also give other baselines' parameter tuning processes in {\emph{SI Parameter Tuning}}.
+
+\subsection*{\textbf{Biological Analysis on Gene Modules}}%GO Enrichment
+
+We used the DAVID \cite{Dennis2003} to investigate the enrichment of functional annotations of genes selected in each gene modules found by our model CMNMF. DAVID\footnote{https://david.ncifcrf.gov/summary.jsp} starts by reading the input file that contains a list of genes, and estimates the statistical significance of the enrichment of GO terms.
+Table \ref{tab:GO_Enrichment} shows the enrichment of GO terms. We present some significant biological processes for certain  gene modules.
+
+
+\begin{table}[!h]
+\centering
+\caption{Enrichment of GO categories in gene modules selected by CMNMF}\label{tab:GO_Enrichment}
+\begin{tabular}{clll}
+\hline
+No &Genes in Module& Most Related GO Terms &P-value\\
+\hline
+\hline
+\multirow{3}{*}{204}&
+\multirow{3}{11em}{GCK, PDX1, INS2,\\E2F1, HNF1A,TNF, \\LEP, RPS6KA3,\\AKT2, SLC5A1, \emph{etc}}&
+ response to organic substance;&1.5E-08\\
+ &&glucose metabolic process;&9.5E-07\\
+ &&positive regulation of macromolecule-\\&& metabolic process;&1.6E-06\\
+\hline
+\multirow{3}{*}{201}&
+\multirow{3}{11em}{AR, NFKBIA, CREBBP,\\CEBPA, DCC,VHL, \\SOS1, FLT3, FASL, \emph{etc}}&
+ hemopoietic or lymphoid organ development;&3.3E-17\\
+ &&immune system development;&7.5E-17\\
+ &&hemopoiesis;&1.5E-16\\
+\hline
+\multirow{3}{*}{138}&
+\multirow{3}{11em}{GCK, SLC2A4, IRS1,\\INS2, IRS2, LDLR, LIPA,\\PCSK1, POMC, \emph{etc}}&
+ response to insulin stimulus;&2.8E-10\\
+ &&response to hormone stimulus;&7.2E-10\\
+ &&response to endogenous stimulus;&1.9E-09\\
+\hline
+\multirow{3}{*}{127}&
+\multirow{3}{11em}{CDK4, ERCC1, G6PC,\\ GAD2,GHR, GPI1,\\ PDX1,MAFA, \emph{etc}}&
+ glucose metabolic process;&1.5E-07\\
+ &&hexose metabolic process;&5.4E-07\\
+ &&monosaccharide metabolic process;&1.2E-06\\
+\hline
+\multirow{3}{*}{41}&
+\multirow{3}{11em}{FCGR2B, C1QA, C4B,\\TROVE2, LYN, POLB,\\WT1,LAMB2, \emph{etc}}&
+ immune effector process;&7.5E-06\\
+ &&negative regulation of immune system process;&2.2E-05\\
+ &&immune response;&5.9E-05\\
+\hline
+\multirow{3}{*}{13}&
+\multirow{3}{11em}{MSH2,TSC2,PRKAR1A,\\VHl,CDKN2A,KRAS,\\FHIT,TRP53, \emph{etc}}&
+ regulation of cell proliferation;&2.9E-07\\
+ &&negative regulation of cell proliferation;&4.3E-07\\
+ &&regulation of apoptosis;&5.9E-06\\
+\hline
+\end{tabular}
+\begin{tablenotes}
+      \small
+      \item The first column is the index of gene modules got by CMNMF, for each gene module, we present some genes in the second column, and we put three most related GO terms and their corresponding P-values in the third and fourth column respectively.
+    \end{tablenotes}
+\end{table}
+
+It is clear that in Table \ref{tab:GO_Enrichment}, gene modules found by CMNMF are statistical significant in terms of certain common GO terms (like: regulation of cell proliferation, immune response, et al.). Besides, we explore the relationships between genes in the modules and diseases in literature to demonstrate the biological meaning of modules found by CMNMF.
+
+In gene module No.204, a number of genes are validated to be associated with diabetes. Haeusler \cite{Haeusler2015} found that, in diabetic subjects with HbA1c $>$ 7.0, gluconeogenic enzymes were expressed normally, but GCK was suppressed more than 60\%. Moreover, HbA1c and fasting glucose were negatively correlated with GCK, but showed no correlation with G6PC, PCK1, or PCK2.
+Through the studies of \cite{Herbach2007}, Munich INS2 (C95S) mutant mice are considered a valuable model to study the mechanisms of beta-cell dysfunction and death during the development of diabetes.
+ In the study of \cite{Swaroop2012}, which revealed a significant correlation between TNF-$\alpha$ levels and BMI (p-value=0.006), the correlation being stronger in males when compared to females. A significant correlation was found between per cent $\beta$ cell function and TNF-$\alpha$ (p-value=0.008). TNF-$\alpha$ correlated significantly with HOMA IR, HOMA B and insulin, in type 2 diabetes.
+
+In gene module No.201, we have found genes in this module have a strong relation to prostate cancer. To be more specific, Han \cite{Han2015} found that with the exception of NFKBIA 3' UTR polymorphism, the heterozygous and mutant genotypes of the other polymorphisms were significantly associated with prostate cancer risk, polymorphisms in NFKB1 and NFKBIA genes may modulate the risk of developing prostate cancer. Ding \cite{Ding2014} developed functional evidence for CBP (Crebbp) and PTEN interaction in prostate cancer based on findings of their correlate expression in the human disease.  Timofeeva \cite{Timofeeva2009} established primary prostate cancer epithelial cells from 14 AA and 13 EA men, to identify cancer-specific gene expression patterns in AA men.
+Tan \cite{Tan2015} gave An overview of AR structure and activity, its actions in prostate cancer, and how structural information and high-throughput screening have been or can be used for drug discovery are provided herein.
+
+We can observe the similar phenomena in other gene modules, it could guide the researchers to study the relations between gene modules and some certain diseases. Our model CMNMF is likely to inspire researchers to discover some underlying patterns behind the sophisticated biological system.
+\subsection*{\textbf{Gene-Phenotype Association Prediction with Supervised CMNMF}}
+ When we consider adding the gene pathways as a prior, the supervised CMNMF can be used for multi-label gene signal pathway classification prediction. In our experiments, we collected 225 mouse pathways from KEGG in total. We choose 21 common KEGG disease pathways (\emph{e.g.} alzheimer, diabetes, prostate cancer, \emph{et al.}) on mouse, there are 145 member genes in these 21 KEGG disease pathways.
+\begin{figure}[!h]
+  \begin{minipage}[t]{0.6\linewidth}
+    \includegraphics[width=\linewidth,origin = l]{DrawPictures/auc_excel.pdf}
+  \end{minipage}
+  \caption{AUC score of different method} \label{fig:AUC}
+\end{figure}
+ In the leave-one-out cross validation, each of the 145 member gene was held out in all pathways and then classified into the 225 pathways as a multi-label classification problem, the other 144 member genes was used as the initialization of to classify the held-out gene. The higher the target pathways in the ranking of the 145 member genes, the better the performance. We measured the performance by the AUC (\emph{see SI AUC}). The baselines we use here is LP, NMF and ColNMF. LP was applied to the gene similarity network, in which the data was measured by genome-phenome association matrix. NMF and ColNMF are the methods we have discussed above with gene pathways as a prior. The average AUC score in the leave-one-out cross validation across the  member genes by all methods are reported in Figure \ref{fig:AUC}. The results clearly show that our methods CMNMF takes advantage of LP, NMF and ColNMF. The Optimization framework of Supervised CMNMF can be found in {\emph{SI Supervised CMNMF}}.
+
+\section*{Conclusions}
+%Gene modules play crucial roles in gene regulation, drug target identifying, and other aspects of application. As the advancements of technology and the expansions of data repositories, the quality and accessibility of data from a wide range of data sources will continuously increase. How to use these accumulated data in a proper way is still a challenging problem for researchers. It is important to design a framework to integrate different types of data for gene module discovery.
+
+In this paper, we introduce a novel method, Consistent Multiple Nonnegative Matrix Factorization (CMNMF) based on genome-phenome association data factorization. Our approach was applied to an integration of hierarchical information of phenotype ontology, as far as we know, which has been rarely used in previous studies. The modules found by our method express notable biological meaning.
+
+There are several merits of CMNMF. First, CMNMF keeps the gene cluster matrix consistent while it interacts with different phenotype ontology levels in decomposing data matrix; on the other hand, it restricts the similarity of phenotype pairs expressed in phenotype cluster matrix to satisfy the hierarchical structure. To achieve a better clustering results, we introduce sparse regularization on gene and phenotype decomposing matrix. The experiments result on our proposed method and other baselines (including HAC, Kmeans, kernel-Kmeans, LDA, NMF, HMF, CMNMF) show the effectiveness of our method. Furthermore, we give a more detailed discussion on the gene modules found by our method in biological aspects. Besides, we conduct a supervised CMNMF for gene signal pathway prediction, the preliminary comparison of our model with LP, NMF and ColNMF demonstrates the good extension of CMNMF to gene classification problem.
+
+Although we have a trial on integration of hierarchical information of phenotype ontology on mouse for gene module discovery problem, there still exists a number of challenging issues to be solved. Such like: 1) in this work, we didn't give much talk on how to use the phenotype clustering results, because neither there has a clear definition of relationship between phenotypes, nor we have found a meaningful classification of phenotypes as a prior that we can utilize in our model; 2) at the moment, we are doing this research on mouse data, because there are much common characteristics between human and mouse, a key issue in the future is how to align the data between two species or even more in a framework to explore the understanding patterns of human biological mechanism; 3) as we know, gene clustering can also be conducted on a variety of gene expression data, here comes a fascinating question, is there possible to find an effective way to cluster genes by integrating genome-phenome data and expression data? Our work is just a snapshot of the biology system, we provide all our codes on Github web site for interested researchers for future further investigations.
+%\footnote{\texttt{https://github.com/nkiip/CMNMF}\\}
+
+%\addcontentsline{toc}{section}{Endnotes} %如希望尾注标题出现在目录中则需此行
+\renewcommand{\enotesize}{\normalsize}
+\theendnotes
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                          %%
+%% Backmatter begins here                   %%
+%%                                          %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Declarations}
+\begin{backmatter}
+
+\section*{Acknowledgements}
+This work is supported by the National Natural Science Foundation of China (No. 61300166 and No. 61105049), the Open Project Foundation of Information Technology Research Base of Civil Aviation Administration of China (CAAC-ITRB-201303 and CAAC-ITRB-201408), the Natural Science Foundation of Tianjin (No. 14JCQNJC00600), and the Science and Technology Planning Project of Tianjin (No. 13ZCZDGX01098).
+\section*{Open Access}
+This article is distributed under the terms of the Creative Commons Attribution 4.0 International License (http://creativecommons.org/licenses/by/4.0/), which permits unrestricted use, distribution, and reproduction in any medium, provided you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons license, and indicate if changes were made. The Creative Commons Public Domain Dedication waiver (http://creativecommons.org/publicdomain/zero/1.0/) applies to the data made available in this article, unless otherwise stated.
+
+\section*{Competing interests}
+The authors declare that they have no competing interests.
+
+\section*{Author's contributions}
+MQX and YGZ originally design the model. YGZ worked on the method, experiment, analyses, and writing of the manuscript. YJX  contributed on method and analyses.  XF and YXH contributed on the experiment. ZCH contributed on the method. MQX and YLH contributed on writing of the manuscript. All authors read and approved the final manuscript.
+\section*{Additional Files}
+  \subsection*{Additional file 1 --- Supporting Information (SI)}
+    This supplement file includes some additional detailed illustrative text and tables we have mentioned in our paper. We give clearly explanatory text in Supporting Information, please refer to it for more details.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                  The Bibliography                       %%
+%%                                                         %%
+%%  Bmc_mathpys.bst  will be used to                       %%
+%%  create a .BBL file for submission.                     %%
+%%  After submission of the .TEX file,                     %%
+%%  you will be prompted to submit your .BBL file.         %%
+%%                                                         %%
+%%                                                         %%
+%%  Note that the displayed Bibliography will not          %%
+%%  necessarily be rendered by Latex exactly as specified  %%
+%%  in the online Instructions for Authors.                %%
+%%                                                         %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% if your bibliography is in bibtex format, use those commands:
+\bibliographystyle{bmc-mathphys} % Style BST file (bmc-mathphys, vancouver, spbasic).
+\bibliography{bmc_CMNMF}      % Bibliography file (usually '*.bib' )
+% for author-year bibliography (bmc-mathphys or spbasic)
+% a) write to bib file (bmc-mathphys only)
+% @settings{label, options="nameyear"}
+% b) uncomment next line
+%\nocite{label}
+%%                               %%
+%% Additional Files              %%
+
+\end{backmatter}
+
+\end{document}

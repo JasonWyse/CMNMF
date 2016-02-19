@@ -1,0 +1,217 @@
+\documentclass{article}
+
+
+%\usepackage[utf8]{inputenc} %unicode support
+%\usepackage{caption}
+\usepackage{graphicx}
+\usepackage{bm}
+\usepackage{color}
+\usepackage{subfigure}
+\usepackage{multirow}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{array}
+\usepackage{subfigure}
+\usepackage{mathrsfs}
+\usepackage{epstopdf}
+\usepackage{amsmath}
+\usepackage{enumerate}
+\usepackage{amsmath}
+
+%\usepackage{underscore}
+\usepackage{booktabs,caption,fixltx2e}
+\usepackage[flushleft]{threeparttable}
+\linespread{1.2}
+\begin{document}
+\title{Consistent Multiple Nonnegative Matrix Factorization with Hierarchical Information for Gene Functional Modules Mining}
+\date{}
+\maketitle
+
+\section*{Supporting Information}
+Files in this Data Supplement:
+\begin{itemize}
+\item SI Parameter Tuning
+\item SI Measurement Definition
+\item SI $\mathcal{M}_{sim}$
+\item SI Significant Analysis
+\item SI AUC
+\item SI Supervised CMNMF
+\end{itemize}
+\subsection*{\textbf{SI Parameter Tuning}}
+we use the Euclidean distance as the gene similarity measure to cluster the genes; for Kernel-Kmeans, Gaussian Kernel function is used for calculating the gene similarity, there is a hyper-parameter $\sigma$ in Kernel-Kmeans, we search it in \{0.001,0.01,0.1,1,10\}; we set the values of hyper-parameters $\alpha$ and $\beta$ in LDA as \cite{Wei2006} suggested. Because there are common sparse constraints in NMF, HMF , ColNMF, and CMNMF, we search the parameters $\lambda_1$, $\lambda_2$ in a grid \{0.001,0.01.0.1,0,1,10\}.
+\subsection*{\textbf{SI Measurement Definition}}
+In Our paper, we evaluate the gene clustering results from three external criteria. These criteria includes $F_1$, $Jaccard\ Index$ and $Rand\ Index$.
+
+ We use $n$ to denote the total gene number, all genes can be denoted as $S=\{O_1,...,O_n\}$, we use gene pathways $X=\{X_1,...,X_r\}$ as the ground-truth partition of genes, and use clustering result $Y=\{Y_1,...,Y_s\}$ as prediction partitions, then define the following notations:
+ \begin{itemize}
+\item TP, the number of pairs of elements in $S$ that are in the same set in $X$ and in the same set in $Y$
+\item TN, the number of pairs of elements in $S$ that are in different sets in $X$ and in different sets in $Y$
+\item FN, the number of pairs of elements in $S$ that are in the same set in $X$ and in different sets in $Y$
+\item FP, the number of pairs of elements in $S$ that are in different sets in $X$ and in the same set in $Y$
+\end{itemize}
+Now we can define the evaluation measures as below:
+\begin{equation}\label{}\nonumber
+\begin{split}
+F_{1}\ measure&=\frac{2PR}{P+R}\quad(P=\frac{TP}{TP+FP},  R=\frac{TP}{TP+FN}) \\
+Jaccard\ Index&=\frac{TP}{TP+FP+FN}\\
+Rand\ Index&=\frac{TP+TN}{TP+FP+FN+TN}
+\end{split}
+\end{equation}
+
+\subsection*{\textbf{SI $\mathcal{M}_{sim}$ }}
+We use $\mathcal{M}_{sim}$ \cite{Bordino2010} as an internal criteria to evaluate gene clustering results.
+we take $\bm{E}[(Sim)_{inter}]$ to denote the average similarity between different gene clusters, $\bm{E}[(Sim)_{intra}]$ to denote average similarity of different genes within gene clusters. then $\mathcal{M}_{sim}$ is defined as:
+\begin{equation}\label{eq:m-sim}
+\mathcal{M}_{sim} = \frac{\bm{E}[(Sim)_{intra}]}{\bm{E}[(Sim)_{inter}]}\nonumber
+\end{equation}
+
+where
+\begin{equation}\label{}\nonumber
+\begin{split}
+\bm{E}[(Sim)_{intra}]&=\frac{1}{|Y|}\sum_{i=1}^{|Y|}
+\frac{\sum_{j=1}^{|Y_i|}\sum_{k=j+1}^{|Y_i|}FS_{simGIC}(G_j,G_k)}{{|Y_i|\choose 2}}\\
+\bm{E}[(Sim)_{inter}]&=\frac{1}{{|Y|\choose 2}}\sum_{\forall(i,j)\in P}
+\frac{\sum_{k=1}^{|Y_i|}\sum_{l=1}^{|Y_j|}FS_{simGIC}(G_k,G_l)}{|Y_i||Y_j|}
+\end{split}
+\end{equation}
+,
+$P=\{(i,j)|1\leq i< j\leq|Y|\}$, $FS_{simGIC}(G_k,G_l)$ \cite{Teng2013} is used to measure the similarity between gene $G_k$ and $G_l$ by GO terms.
+
+The $\mathcal{M}_{sim}$, an internal clustering evaluation measure, is used for evaluating the performance of clustering genes by factorizing gene-phenotype associations. The higher the $\mathcal{M}_{sim}$, the better the performance. For $\mathcal{M}_{sim}$, genes are featured with annotated GO terms, and $FS_{simGIC}(G_k,G_l)$ \cite{Teng2013} is used to measure the similarity between gene $G_k$ and $G_l$ by GO terms. In other words, genes are clustered well if the GO annotations of genes in a cluster are similar.
+\subsection*{\textbf{SI Significant Analysis}}
+\begin{table}[!h]
+\centering
+\caption{The Student's t-test results of each pair methods on $F_1$ measure}\label{F1}
+\begin{tabular}{c|cccccccc}
+\hline
+&HAC &Kmeans& KK&LDA&NMF&HMF&ColNMF&CMNMF\\
+\hline
+HAC&- & 5.90E-09&8.82E-10&0&1.52E-10&6.85E-05&8.39E-08&5.94E-09\\
+%\hline
+Kmeans&5.90E-09& -&8.40E-03&1.75E-14&4.97E-12&1.19E-09&8.36E-11&1.11E-10\\
+%\hline
+KK&8.82E-10& 8.40E-03&-&5.67E-14&2.95E-12&2.15E-10&2.61E-11&2.99E-11\\
+%\hline
+LDA&0& 1.75E-14&5.67E-14&-&2.29E-03&5.00E-10&6.59E-06&1.25E-05\\
+%\hline
+NMF&1.52E-10& 4.97E-12&2.95E-12&2.29E-03&-&1.86E-05&3.58E-02&3.02E-06\\
+HMF&6.85E-05& 1.19E-09&2.15E-10&5.00E-10&1.86E-05&-&5.70E-03&7.25E-08\\
+%\hline
+ColNMF &8.39E-08& 8.36E-11&2.61E-11&6.59E-06&3.58E-02&5.70E-03&-&6.53E-07\\
+%\hline
+CMNMF &5.94E-09&1.11E-10&2.99E-11&1.25E-05&3.02E-06&7.25E-08&6.53E-07&-\\
+%CMNMF(1)&0.1023&0.0537&0.9604&0.6053&\textbf{16.0618}\\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}[!h]
+\centering
+\caption{The Student's t-test results of each pair methods on $Jaccard\ Index$ measure}\label{JI}
+\begin{tabular}{c|cccccccc}
+\hline
+&HAC &Kmeans& KK&LDA&NMF&HMF&ColNMF&CMNMF\\
+\hline
+HAC&- & 3.93E-02&5.38E-05&0&7.65E-16&8.66E-12&5.59E-15&6.26E-11\\
+%\hline
+Kmeans&3.93E-02& -&2.65E-05&2.10E-16&2.57E-12&1.08E-08&3.17E-11&2.37E-10\\
+%\hline
+KK&5.38E-05& 2.65E-05&-&8.04E-16&2.84E-13&7.76E-11&1.64E-12&1.99E-11\\
+%\hline
+LDA&0&2.10E-16&8.04E-16&-&1.05E-05&2.80E-10&7.59E-09&4.90E-05\\
+%\hline
+NMF&7.65E-16&2.57E-12&2.84E-13&1.05E-05&-&3.05E-05&1.58E-02&3.16E-06\\
+HMF&8.66E-12&1.08E-08&7.76E-11&2.80E-10&3.05E-05&-&5.40E-03&7.91E-08\\
+%\hline
+ColNMF &5.59E-15&3.17E-11&1.64E-12&7.59E-09&1.58E-02&5.40E-03&-&5.31E-07\\
+%\hline
+CMNMF &6.26E-11&2.37E-10&1.99E-11&4.90E-05&3.16E-06&7.91E-08&5.31E-07&-\\
+%CMNMF(1)&0.1023&0.0537&0.9604&0.6053&\textbf{16.0618}\\
+\hline
+\end{tabular}
+\end{table}
+\begin{table}[!h]
+\centering
+\caption{The Student's t-test results of each pair methods on $\mathcal{M}_{sim}$}\label{M_sim}
+\begin{tabular}{c|cccccccc}
+\hline
+&HAC &Kmeans& KK&LDA&NMF&HMF&ColNMF&CMNMF\\
+\hline
+HAC&- & 3.42E-05&7.06E-07&0&6.11E-11&1.80E-09&9.17E-09&5.33E-04\\
+%\hline
+Kmeans&3.42E-05& -&1.89E-03&4.15E-09&1.66E-02&2.79E-07&1.65E-01&2.38E-06\\
+%\hline
+KK&7.06E-07&1.89E-03&-&6.76E-14&3.81E-02&3.57E-04&9.29E-03&1.42E-07\\
+%\hline
+LDA&0& 4.15E-09&6.76E-14&-&7.08E-10&7.93E-04&5.07E-10&3.90E-18\\
+%\hline
+NMF&6.11E-11& 1.66E-02&3.81E-02&7.08E-10&-&1.49E-06&1.83E-01&9.94E-11\\
+HMF&1.80E-09&2.79E-07&3.57E-04&7.93E-04&1.49E-06&-&6.08E-07&7.25E-10\\
+%\hline
+ColNMF &9.17E-09&1.65E-01&9.29E-03&5.07E-10&1.83E-01&6.08E-07&-&3.68E-09\\
+%\hline
+CMNMF &5.33E-04&2.38E-06&1.42E-07&3.90E-18&9.94E-11&7.25E-10&3.68E-09&-\\
+%CMNMF(1)&0.1023&0.0537&0.9604&0.6053&\textbf{16.0618}\\
+\hline
+\end{tabular}
+\end{table}
+We give a significant analysis of the results of each pair methods, Table \ref{F1}, Table \ref{JI}, Table \ref{M_sim} give the Student's t-test on $F_1$ measure, $Jaccard\ Index$ and $\mathcal{M}_{sim}$ respectively. The last columns of each table show that the result of our model CMNMF outperforms other baselines significantly (p$<$0.01).
+
+\subsection*{\textbf{SI AUC}}
+AUC, area under the curve (AUC) is the area under the ROC (Receiver Operating Characteristic) curve. The curve is created by plotting the true positive rate (TPR) against the false positive rate (FPR) at various threshold settings. In our paper, we use AUC-K (like AUC50) to calculate the area under the ROC from the zero point, which counts only total K false positive samples. AUCALL means we take all false positive samples into account, which equals to the AUC score we usually refer to.
+\subsection*{\textbf{SI Supervised CMNMF}}
+By considering prior gene classification prior, our proposed CMNMF can be utilized for another task, multi-label gene signal pathway classification problem as well. We call it Supervised CMNMF (S-CMNMF) as including gene pathway classification prior. Thus, the loss function of S-CMNMF can be rewrite as:
+\begin{equation}\label{obj:Sup-CMNMF}
+\begin{split}
+%\mathop {\min }\limits_{G,{P_1},{P_2}}
+L_s =
+&\left\| {{\bm{A}_1} - \bm{G}{\bm{P}_1}} \right\|_F^2 + \alpha \left\| {{\bm{A}_2} - \bm{G}{\bm{P}_2}} \right\|_F^2 - \beta tr({\bm{P}_1}\bm{MP}_2^T)\\
+&+\gamma\left\| {\bm{G} - {\bm{G}_0}}\right\|_F^2
+%{\rm{ + }}{\lambda _1}\left\| \bm{G} \right\|_F^2{\rm{ + }}{\lambda _2}(\left\| {{\bm{P}_1}} \right\|_F^2{\rm{ + }}\left\| {{\bm{P}_2}} \right\|_F^2)
+\\
+&\sum_j\bm{G}_{ij}=1,\quad \sum_i{(\bm{P}_1)}_{ij}=1,\quad \sum_i{(\bm{P}_2)}_{ij}=1
+%\mathrm{s.t. }\qquad {\rm{  G}} \ge {\rm{0, }}\quad{{\rm{P}}_1}{\rm{, }} {{\rm{P}}_2} \ge 0,
+\end{split}
+\end{equation}
+
+\subsubsection*{{Computation of $\bm{G}$ in Supervised CMNMF}}
+We fix variables $\bm{P}_1$ and $\bm{P}_2$,
+%solving Eq(\ref{obj:Sup-CMNMF}) with respect to $G$ is equivalent to minimize the following function:
+%\begin{equation}\label{obj:sup_G}\nonumber
+%\begin{split}
+%&L_{s}(G)=\left\| {{A_1} - GP_1} \right\|_F^2 + \alpha \left\| {{A_2} - G{P_2}} \right\|_F^2
+%     +\beta\left\| {G - {G_0}}\right\|_F^2+{\lambda _1}\left\| G \right\|_F^2\\
+%     &\mathrm{s.t. }\quad \sum_jG_{ij}=1,G\ge 0
+%\end{split}
+%\end{equation}
+the partial derivative of Equation (\ref{obj:Sup-CMNMF}) with respect to $\bm{G}$ is:
+\begin{equation}\label{equ:G_gradient}\nonumber
+\begin{split}
+\frac{\partial{L_s}}{\partial{\bm{G}}}=
+&-2(\bm{A}_1{\bm{P}_1^T} - \bm{G}{\bm{P}_1}{\bm{P}_1^T})-2\alpha(\bm{A}_2{\bm{P}_2^T} - \bm{G}{\bm{P}_2}{\bm{P}_2^T})+2\gamma(\bm{G}-\bm{G}_0)
+%+2\lambda_1\bm{G}
+\end{split}
+\end{equation}
+the multiplicative update rule is:
+\begin{equation}\label{equ:updating_G}\nonumber
+\bm{G}_{ij}\leftarrow \bm{G}_{ij}
+\frac{(\bm{A}_1\bm{P}_1^T+\alpha \bm{A}_2\bm{P}_2^T+\gamma \bm{G}_0)_{ij}}
+{(\bm{GP}_1\bm{P}_1^T+\alpha \bm{GP}_2\bm{P}_2^T+\gamma \bm{G})_{ij}}
+%+\lambda_1\bm{G}
+\end{equation}
+To satisfy the equality constraint, we normalize $\bm{G}_{ij}$ as $\bm{G}_{ij}\leftarrow\frac{\bm{G}_{ij}}{\sum_{j}\bm{G}_{ij}}$..
+% as
+%\begin{equation}\label{equ:updating_G}\nonumber
+%G_{ij}\leftarrow \frac{G_{ij}}{\sum_{j}G_{ij}}
+%\end{equation}
+
+\subsubsection*{{Computation of $\bm{P}_1$ and $\bm{P}_2$ in Supervised CMNMF}}
+Because the updating rules of supervised CMNMF for $\bm{P}_1$ and $\bm{P}_2$ are the same as CMNMF above, we would not present it here again.
+
+\subsubsection*{{The Algorithm of Supervised CMNMF}}
+
+For supervised CMNMF algorithm, we just need to change the update rule for $\bm{G}$ as we talked in \textup{Computation of $\bm{G}$ in Supervised CMNMF} part, the rest is the same as CMNMF.
+
+\bibliographystyle{bmc-mathphys} % Style BST file (bmc-mathphys,
+\bibliography{bmc_CMNMF}
+\end{document}

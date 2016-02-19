@@ -1,0 +1,84 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Long Lined Cover Letter
+% LaTeX Template
+% Version 1.0 (1/6/13)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Original author:
+% Matthew J. Miller
+% http://www.matthewjmiller.net/howtos/customized-cover-letter-scripts/
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[10pt,stdletter,dateno,sigleft]{newlfm} % Extra options: 'sigleft' for a left-aligned signature, 'stdletternofrom' to remove the from address, 'letterpaper' for US letter paper - consult the newlfm class manual for more options
+
+\usepackage{charter} % Use the Charter font for the document text
+
+\newsavebox{\Luiuc}\sbox{\Luiuc}{\parbox[b]{1.75in}{\vspace{0.5in}
+%\includegraphics[width=1.2\linewidth]{logo.png}
+}} % Company/institution logo at the top left of the page
+\makeletterhead{Uiuc}{\Lheader{\usebox{\Luiuc}}}
+
+\newlfmP{sigsize=50pt} % Slightly decrease the height of the signature field
+%\newlfmP{addrfromphone} % Print a phone number under the sender's address
+\newlfmP{addrfromemail} % Print an email address under the sender's address
+%\PhrPhone{Phone} % Customize the "Telephone" text
+\PhrEmail{Email} % Customize the "E-mail" text
+
+\lthUiuc % Print the company/institution logo
+
+%----------------------------------------------------------------------------------------
+%	YOUR NAME AND CONTACT INFORMATION
+%----------------------------------------------------------------------------------------
+
+\namefrom{MaoQiang Xie} % Name
+\addrfrom{
+\today\\[12pt] % Date
+38 Tongyan Road, JinNan District \\ % Address
+TianJin, China 
+}
+\emailfrom{xiemq@nankai.edu.cn} % Email address
+
+%----------------------------------------------------------------------------------------
+%	ADDRESSEE AND GREETING/CLOSING
+%----------------------------------------------------------------------------------------
+
+\greetto{Dear Editor,} % Greeting text
+\closeline{Sincerely yours,} % Closing text
+%\nameto{Mrs. Jane Smith} % Addressee of the letter above the to address
+%\addrto{
+%Recruitment Officer \\ % To address
+%The Corporation \\
+%123 Pleasant Lane \\
+%City, State 12345
+%}
+
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+\begin{newlfm}
+
+%----------------------------------------------------------------------------------------
+%	LETTER CONTENT
+%----------------------------------------------------------------------------------------
+I am pleased to submit an original research article entitled "Consistent Multiple Nonnegative Matrix Factorization with Hierarchical Information for Gene Functional Modules Mining", for consideration for publication in BMC Bioinformatics.
+
+Our work is highly related to gene module clustering, we believe that this manuscript is appropriate for publication by the Journal of BMC Bioinformatics. In this manuscript, our work proposes a new way to mining gene functional modules with the help of hierarchical structure information of phenotype ontology, by factorizing genome-phenome association data on mouse. Our proposed model CMNMF constrains the gene cluster matrix to remain consistent while it interacts with different phenotype ontology levels in decomposing the genome-phenome association matrix, meanwhile it restricts the similarity of adjacent phenotype ontology pairs to satisfy the hierarchical structure.
+
+CMNMF and seven baseline methods are conducted on mouse gene-phenotype associations. The performance of clustering and GO enrichment analysis show the effectiveness of CMNMF. Additionally, a preliminary supervised CMNMF is proposed for showing its generalizing ability.
+
+This manuscript describes original work and is not under consideration by any other journal. All authors have no conflicts of interest to disclose and approved the manuscript and this submission.
+%If you feel that the manuscript is appropriate for your journal, we suggest the following reviewers:
+
+Thank you for receiving our manuscript and considering it for review. We appreciate your time and look forward to your response.
+\end{newlfm}
+\end{document}

@@ -195,7 +195,7 @@ Based on multiplicative update rules\cite{DanielD.Lee2001}, we can get a non-neg
 However, the NMF method in this form has not taken the hierarchical mapping information of phenotype ontology into consideration. To address this problem, we design a loss function with two aspects for formulating the loss with hierarchical information of phenotype ontologies:
 \begin{itemize}
 \item The first aspect is a consistent constraint on gene cluster, the reason is intuitive, one gene interacts with a child phenotype ontology, it should interact with the child ontology's parent phenotype ontology, because parent phenotype ontologies are generalization of child phenotype ontologies, the child phenotype ontologies are specification of parent phenotype ontologies (\emph{e.g.} MP2110: abnormal digit morphology, coming from level 4; MP564: syndactyly, coming from level 5). Figure \ref{fig:model}(a) shows the gene clustering results on general and specific phenotype ontology level, on which we put a consistent constraint.
-\item The second component is a hierarchical mapping constraint between phenotype ontologies from parent level and ones from child level. Fig. \ref{fig:model}(b). Because phenotype ontologies coming from the adjacent level, there should exist strong relationships between these parent-child ontologies pairs, in which we apply hierarchical mapping constrains to demonstrate the relationships between them. The clusters of phenotype ontologies from different levels should be consistent as well.
+\item The second aspect is a hierarchical mapping constraint between phenotype ontologies from parent level and ones from child level. Fig. \ref{fig:model}(b). Because phenotype ontologies coming from the adjacent level, there should exist strong relationships between these parent-child ontologies pairs, in which we apply hierarchical mapping constrains to demonstrate the relationships between them. The clusters of phenotype ontologies from different levels should be consistent as well.
 \end{itemize}
 By optimizing these two components, our CMNMF (Consistent Multiple Non-negative Matrix Factorization) algorithm is proposed to obtain consistent gene clusters.
 
@@ -210,7 +210,7 @@ For the hierarchical mapping constraints on phenotype ontologies, loss function 
 \begin{equation}\label{equ:L_H}
 {L_H} = \sum\limits_{ij} {{\bm{M}_{ij}}} {(\bm{P}_1^{(i)})^T}\bm{P}_2^{(j)} = tr({\bm{P}_1}\bm{MP}_2^T),\
 \end{equation}
-where $\bm{M}_{m_1\times m_2}$ denotes the hierarchical mapping relation matrix between phenotype ontologies from different levels. $\bm{M}_{ij}=1$, if phenotype $i$ and phenotype $j$ have a parent-child relationship, otherwise 0. We enforce hierarchical mapping constraints by maximizing the mapping between the phenotype ontologies in gene-phenotype network $\bm{A}_{1}$ and $\bm{A}_{2}$.
+where $\bm{M}_{m_1\times m_2}$ denotes the hierarchical mapping relation matrix between phenotype ontologies from adjacent levels. $\bm{M}_{ij}=1$, if phenotype $i$ and phenotype $j$ have a parent-child relationship, otherwise 0. We enforce hierarchical mapping constraints by maximizing the mapping between the phenotype ontologies in gene-phenotype network $\bm{A}_{1}$ and $\bm{A}_{2}$.
 
 \subsection*{\textbf{Regularization by Sparse Constraint}}
 Since the known gene-phenotype associations are sparse and only cover a part of genes and phenotypes, the regularization with $L_2$ norm is proposed to control the sparseness of $\bm{G}$, $\bm{P}_1$ and $\bm{P}_2$. The coefficients ${\lambda_1}$ and $\lambda_2$ balance the regularization terms. Finally, the framework of regularized CMNMF with sparse constraint is to minimize the loss function formulated as follows:
@@ -239,14 +239,14 @@ We fix variables $\bm{P}_1$ and $\bm{P}_2$,
 %     &\mathrm{s.t. }\quad \sum_jG_{ij}=1,G\ge 0
 %\end{split}
 %\end{equation}
-using the Karush-Kuhn-Tucher (KKT) conditions $\bm{\Phi}_{ij}\bm{G}_{ij}=0$, the partial derivative of Equation (\ref{equ:R-CMNMF}) with respect to $\bm{G}$ is:
+the partial derivative of Equation (\ref{equ:R-CMNMF}) with respect to $\bm{G}$ is:
 \begin{equation}\label{equ:G_gradient}\nonumber
 \begin{split}
 \frac{\partial{L}}{\partial{\bm{G}}}=
 &-2(\bm{A}_1{\bm{P}_1^T} - \bm{G}{\bm{P}_1}{\bm{P}_1^T})-2\alpha(\bm{A}_2{\bm{P}_2^T} - \bm{G}{\bm{P}_2}{\bm{P}_2^T})+2\lambda_1\bm{G}+\bm{\Phi}
 \end{split}
 \end{equation}
-The multiplicative update rule is:
+where $\bm{\Phi}$ is the Lagrange multiplier matrix, using the Karush-Kuhn-Tucher (KKT) conditions $\bm{\Phi}_{ij}\bm{G}_{ij}=0$, the multiplicative update rule is:
 \begin{equation}\label{equ:updating_G}\nonumber
 \bm{G}_{ij}\leftarrow \bm{G}_{ij}
 \frac{(\bm{A}_1\bm{P}_1^T+\alpha \bm{A}_2\bm{P}_2^T)_{ij}}
@@ -278,8 +278,7 @@ the partial derivative of Equation (\ref{equ:R-CMNMF}) with respect to $\bm{P}_1
 -2\alpha(\bm{G}^T\bm{A}_2-{\bm{G}^T\bm{GP}_2})-\gamma \bm{P}_1\bm{M} +2\lambda_2\bm{P}_2+\bm{\Psi}
 \end{split}
 \end{equation}
-Using the KKT conditions
- $\bm{\Omega}_{ij}(\bm{P}_1)_{ij}=0 , \bm{\Psi}_{ij}(\bm{P}_2)_{ij}=0$, the multiplicative update rule is(note that when we compute $\bm{P}_1$, we take $\bm{P}_2$ fixed, vise versa):
+where $\bm{\Omega}$ and $\bm{\Psi}$ are the Lagrange multiplier matrix, using the Karush-Kuhn-Tucher (KKT) conditions $\bm{\Omega}_{ij}(\bm{P}_1)_{ij}=0 , \bm{\Psi}_{ij}(\bm{P}_2)_{ij}=0$, the multiplicative update rule is (note that when we compute $\bm{P}_1$, we take $\bm{P}_2$ fixed, vise versa):
 \begin{equation}\label{updating_P}\nonumber
 \begin{split}
 &(\bm{P}_1)_{ij}\leftarrow (\bm{P}_1)_{ij}
@@ -444,7 +443,7 @@ We combine the phenotype ontologies from level 4 and level 5 as features for eac
 
 For methods LDA, NMF, HMF, ColNMF and CMNMF, the gene clustering results are row-normalized by using z-score. For each gene, it can belong to multiple clusters, as it can participate in a couple of pathways, so we take the following strategy to predict the clusters the gene belongs to: first, for a cluster distribution of a gene, we sort the values in a descending order; then we choose the top k clusters, of which the sum of the values is closest to 0.9, as the modules this gene belongs to.
 \subsection*{\textbf{Evaluation on Gene Clustering results}}
-In Our paper, we evaluate the gene clustering results from external criteria and internal criteria respectively. External criteria includes $F_1$, $Jaccard\ Index$ and $Rand\ Index$, for internal criteria, we choose $\mathcal{M}_{sim}$ defined in \cite{Bordino2010}.  
+In Our paper, we evaluate the gene clustering results from external criteria and internal criteria respectively. External criteria includes $F_1$, $Jaccard\ Index$ and $Rand\ Index$, for internal criteria, we choose $\mathcal{M}_{sim}$ defined in \cite{Bordino2010}.
 
  We use $n$ to denote the total gene number, all genes can be denoted as $S=\{O_1,...,O_n\}$, we use gene pathways $X=\{X_1,...,X_r\}$ as the ground-truth partition of genes, and use clustering result $Y=\{Y_1,...,Y_s\}$ as prediction partitions, then define the following notations: TP, TN, FN, FP, which are defined according to whether pairs of elements of $S$ are in $X$ and $Y$ or not
 %\footnote{more details see: https://en.wikipedia.org/wiki/Rand\_index}.
@@ -476,15 +475,15 @@ For all these three external criteria measurements $F_1\ measure$, $Jaccard\ Ind
 %\end{equation}
 Another measurement on gene ontology for prediction clustering result $Y=\{Y_1,...,Y_s\}$, we take the evaluation criteria $\mathcal{M}_{sim}$ in \cite{Bordino2010}, using  $(Sim)_{inter}$ to denote the average similarity between different gene clusters, $(Sim)_{intra}$ to denote average similarity of different genes within gene clusters. then $\mathcal{M}_{sim}$ is defined as:
 $$
-\mathcal{M}_{sim} = \frac{(Sim)_{inter}}{(Sim)_{intra}}
+\mathcal{M}_{sim} = \frac{\bm{E}[(Sim)_{intra}]}{\bm{E}[(Sim)_{inter}]}
 $$
 where
 \begin{equation}\label{}\nonumber
 \begin{split}
-(Sim)_{inter}&=\frac{1}{{|Y|\choose 2}}\sum_{\forall(i,j)\in P}
-\frac{\sum_{k=1}^{|Y_i|}\sum_{l=1}^{|Y_j|}FS_{simGIC}(G_k,G_l)}{|Y_i||Y_j|}\\
-(Sim)_{intra}&=\frac{1}{|Y|}\sum_{i=1}^{|Y|}
-\frac{\sum_{j=1}^{|Y_i|}\sum_{k=j+1}^{|Y_i|}FS_{simGIC}(G_j,G_k)}{{|Y_i|\choose 2}}
+\bm{E}[(Sim)_{intra}]&=\frac{1}{|Y|}\sum_{i=1}^{|Y|}
+\frac{\sum_{j=1}^{|Y_i|}\sum_{k=j+1}^{|Y_i|}FS_{simGIC}(G_j,G_k)}{{|Y_i|\choose 2}}\\
+\bm{E}[(Sim)_{inter}]&=\frac{1}{{|Y|\choose 2}}\sum_{\forall(i,j)\in P}
+\frac{\sum_{k=1}^{|Y_i|}\sum_{l=1}^{|Y_j|}FS_{simGIC}(G_k,G_l)}{|Y_i||Y_j|}
 \end{split}
 \end{equation}
 ,
@@ -509,7 +508,7 @@ HMF&0.0904&0.0474&0.9686&1.1133&5.3262\\
 %\hline
 ColNMF&0.0942&0.0495&0.9738&0.7419&15.909\\
 %\hline
-CMNMF(0.5)&\textbf{0.1065}& \textbf{0.0563}&{0.9701}& \textbf{0.6078}&\textbf{16.0158}\\
+CMNMF&\textbf{0.1065}& \textbf{0.0563}&{0.9701}& \textbf{0.6078}&\textbf{16.0158}\\
 %CMNMF(1)&0.1023&0.0537&0.9604&0.6053&\textbf{16.0618}\\
 \hline
 \end{tabular}

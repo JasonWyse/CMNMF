@@ -1,0 +1,12 @@
+\@doanenote {1}
+macro:->ftp://ftp.informatics.jax.org/pub/reports/MGI\_Geno\_Disease.rpt
+\@endanenote 
+\@doanenote {2}
+macro:->ftp://ftp.informatics.jax.org/pub/reports/MPheno\_OBO.ontology
+\@endanenote 
+\@doanenote {3}
+macro:->http://www.genome.jp/kegg/pathway.html
+\@endanenote 
+\@doanenote {4}
+macro:->https://david.ncifcrf.gov/summary.jsp
+\@endanenote 

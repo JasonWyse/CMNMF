@@ -25,6 +25,7 @@
 *.nlo
 *.out
 *.pdfsync
+*.pdf
 *.ps
 *.run.xml
 *.snm
@@ -34,11 +35,9 @@
 *.vrb
 *.xdy
 *.tdo
-*.pdf
 *.bak
 *.bak
 *.aux
 *.log
 *.sav
 *.html
-

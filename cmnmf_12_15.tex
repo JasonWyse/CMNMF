@@ -143,7 +143,7 @@ In this study, we developed a novel NMF based approach Consistent Multiple Nonne
     \includegraphics[width=\linewidth]{DrawPictures/module2.pdf}
   \end{minipage}
   \caption{Illustration of the CMNMF framework. (a) The gene-phenotype \\ associations are separated to 2 matrices by the level of phenotype ontologies. \\These 2 matrices share the same gene set as their first dimensions. (b)\\ Consistent constraint on factorized gene clusters. (c) Hierarchical mapping \\ constraints on the phenotype ontologies from parent and child levels.}
-  \label{fig:model} 
+  \label{fig:model}
 \end{figure}
 %The remainder of the paper is organized as follows. We present our consistent multiple nonnegative matrix factorization framework in Section 2. Section 3 reports some experiments and discussions. Followed with conclusion and future work in section 4.
 
@@ -378,12 +378,12 @@ Our method's effectiveness on clustering gene modules is demonstrated on sampled
 
 As an extension of CMNMF, by incorporating gene classification prior, our Supervised CMNMF show the good ability to classify multi-label problem compared with LP and ColNMF.
 \subsection*{\textbf{Data Preparation}}
- The mouse gene-phenotype ontology associations are extracted from file ``MGI\_Geno\_Disease.rpt" (March-2015) downloaded from MGI \footnote{ftp://ftp.informatics.jax.org/pub/reports/MGI\_Geno\_Disease.rpt}, in which 5894 gene-phenotype associations at level 4 and 6817 associations at level 5 are kept. 2144 ontology terms at level 4 (parent level) and 2719 ontology terms at level 5 (child level)  are selected from the 10748 MP terms in the ``MPheno\_OBO.ontology''(November-2015) file\footnote{ftp://ftp.informatics.jax.org/pub/reports/MPheno\_OBO.ontology}. 2866 hierarchial mapping relations(adjacent parent-child relationships) between phenotypes in level 4 and level 5 are kept as $M$.
+ The mouse gene-phenotype ontology associations are extracted from file ``MGI\_Geno\_Disease.rpt" (December-2015) downloaded from MGI \footnote{ftp://ftp.informatics.jax.org/pub/reports/MGI\_Geno\_Disease.rpt}, in which 7029 gene-phenotype associations at level 4 and 8588 associations at level 5 are kept. 2342 ontology terms at level 4 (parent level) and 3257 ontology terms at level 5 (child level)  are selected from the 11471 MP terms in the ``MPheno\_OBO.ontology''(November-2015) \footnote{ftp://ftp.informatics.jax.org/pub/reports/MPheno\_OBO.ontology}. 3583 hierarchial mapping relations(adjacent parent-child relationships) between phenotypes in level 4 and level 5 are kept as $M$.
 
 In our gene module clustering problem,
-after removing phenotypes, which neither has relationships with any disease genes in gene-phenotype associations nor has relationships with any phenotypes in any levels in hierarchial mapping relations, then we generate a dataset containing 1274 disease genes and 4756 phenotypes.
+after removing phenotypes, which neither has relationships with any disease genes in gene-phenotype associations nor has relationships with any phenotypes in any levels in hierarchial mapping relations, then we generate a dataset containing 1354 disease genes and 5245 phenotypes.
 
-To evaluate the clustering performance for CMNMF, we crawled 280 mouse gene pathways from KEGG\footnote{http://www.genome.jp/kegg/pathway.html} and selected 229 of them as the ``ground truth'' of gene modules. Genes in a signal pathway can be considered as a gene functional module (or a gene cluster).
+To evaluate the clustering performance for CMNMF, we crawled 280 mouse gene pathways from KEGG\footnote{http://www.genome.jp/kegg/pathway.html} and selected 225 of them as the ``ground truth'' of gene modules (We interact each pathway with genes in gene-phenotype association matrix, if the interacting common genes for this pathway are less than 3, we hold this out. At last, we get 225 pathways in total). Genes in a signal pathway can be considered as a gene functional module (or a gene cluster).
 
 In the leave-one-out cross-validation, after preprocessing (removing genes not present in the gene pathways, and choosing the phenotypes that has relationships with selected genes and the phenotypes that have parent-child relationships), we generated a dataset with 703 genes and 4116 phenotypes.
 \subsection*{\textbf{CMNMF on Sampled Data}}
@@ -472,21 +472,21 @@ For all these three measurements $F_1\ measure$, $Jaccard\ Index$ and $Rand\ Ind
 %FS_{simGIC}(G_A,G_B)=\frac{\sum_{t_i\in{T_A\bigcap{T_B}}}IC(t_i)}{\sum_{t_j\in{T_A\bigcup{T_B}}}IC(t_j)}
 %\end{split}
 %\end{equation}
-Another measurement on gene ontology for prediction clustering result $Y=\{Y_1,...,Y_s\}$, we draw the similar concept from\cite{Wei2006}, using  $(Sim)_{between}$ to denote the average similarity between different gene clusters, $(Sim)_{between}$ to denote average similarity of different genes within gene clusters. then we defined $GO_{rate}$ as:
+Another measurement on gene ontology for prediction clustering result $Y=\{Y_1,...,Y_s\}$, we take the same evaluation $\mathcal{M}_{sim}$in \cite{Bordino2010}, using  $(Sim)_{inter}$ to denote the average similarity between different gene clusters, $(Sim)_{intra}$ to denote average similarity of different genes within gene clusters. then $\mathcal{M}_{sim}$ is defined as:
 $$
-GO_{rate} = \frac{(Sim)_{between}}{(Sim)_{within}}
+\mathcal{M}_{sim} = \frac{(Sim)_{inter}}{(Sim)_{intra}}
 $$
 where
 \begin{equation}\label{}\nonumber
 \begin{split}
-(Sim)_{between}&=\frac{1}{{|Y|\choose 2}}\sum_{\forall(i,j)\in P}
+(Sim)_{inter}&=\frac{1}{{|Y|\choose 2}}\sum_{\forall(i,j)\in P}
 \frac{\sum_{k=1}^{|Y_i|}\sum_{l=1}^{|Y_j|}FS_{simGIC}(G_k,G_l)}{|Y_i||Y_j|}\\
-(Sim)_{within}&=\frac{1}{|Y|}\sum_{i=1}^{|Y|}
+(Sim)_{intra}&=\frac{1}{|Y|}\sum_{i=1}^{|Y|}
 \frac{\sum_{j=1}^{|Y_i|}\sum_{k=j+1}^{|Y_i|}FS_{simGIC}(G_j,G_k)}{{|Y_i|\choose 2}}
 \end{split}
 \end{equation}
 ,
-$P=\{(i,j)|1\leq i< j\leq|Y|\}$, $FS_{simGIC}(G_k,G_l)$ \cite{Teng2013} is used to measure the similarity between gene $G_k$ and $G_l$ by GO terms. In terms of evaluation measure $GO_{rate}$ we defined here, the lower values, the better clustering results.
+$P=\{(i,j)|1\leq i< j\leq|Y|\}$, $FS_{simGIC}(G_k,G_l)$ \cite{Teng2013} is used to measure the similarity between gene $G_k$ and $G_l$ by GO terms.
 \begin{table}[!t]
 \centering
 \caption{Performance results of different methods on $F_1$, $Jaccard\ Index$, $Rand\ Index$, $GO_{rate}$}\label{tab:measurements}
@@ -601,7 +601,7 @@ In gene module No.201, we have found genes in this module have a strong relation
 
  We can observe the similar phenomena in other gene modules\footnote{the overall gene modules got by CMNMF can be found in additional file xxx}, it could guide the researchers to study the relations between gene modules and some certain diseases. Our model CMNMF may inspire researchers to discover some underlying patterns behind the sophisticated biological system.
 \subsection*{\textbf{Gene-Phenotype Association Prediction with Supervised CMNMF}}
-When we add the gene pathways as a prior, the supervised CMNMF can also be used for gene-phenotype association prediction.In our experiments, we collected 229 mouse pathways from KEGG in total. We choose 21 common KEGG disease pathways (\emph{e.g.} alzheimer, diabetes, prostate cancer, \emph{et.al.}) on mouse, there are 145 member genes in these 21 KEGG disease pathways pathways.
+When we add the gene pathways as a prior, the supervised CMNMF can also be used for gene-phenotype association prediction. In our experiments, we collected 225 mouse pathways from KEGG in total. We choose 21 common KEGG disease pathways (\emph{e.g.} alzheimer, diabetes, prostate cancer, \emph{et.al.}) on mouse, there are 145 member genes in these 21 KEGG disease pathways pathways.
 \begin{figure}[!h]
   \begin{minipage}[t]{0.9\linewidth}
     \includegraphics[width=\linewidth,origin = l]{DrawPictures/auc_excel.pdf}
@@ -609,15 +609,15 @@ When we add the gene pathways as a prior, the supervised CMNMF can also be used 
   \caption{AUC score of different method} \label{fig:AUC}
 \end{figure}
 
- In the leave-one-out cross validation, each of the 145 member gene was held out and then classified into the 229 pathways as a multi-label classification problem since some of the disease genes are
-members of multiple pathways. The higher the target pathways in the ranking of the 145 pathways, the better the performance. We measured the performance by the AUC. The baselines we use here is LP and HMF. LP was applied on the gene similarity network, in which the data be used was measured by genome-phenome association matrix. The other 144 member genes was used as the initialization of label propagations to classify the held-out gene. Another baseline is the HMF model we have introduced before. The average AUC score in the leave-one-out cross validation across the  member genes by all the methods are reported in Figure \ref{fig:AUC}. The results clearly show that our methods CMNMF takes advantage of LP and HMF, which only uses the genome-phenome association network for disease gene discovery.
+ In the leave-one-out cross validation, each of the 145 member gene was held out and then classified into the 225 pathways as a multi-label classification problem since some of the disease genes are
+members of multiple pathways. The higher the target pathways in the ranking of the 145 member genes, the better the performance. We measured the performance by the AUC. The baselines we use here is LP and ColNMF. LP was applied on the gene similarity network, in which the data be used was measured by genome-phenome association matrix. The other 144 member genes was used as the initialization of label propagations to classify the held-out gene. Another baseline is the ColNMF model we have introduced before. The average AUC score in the leave-one-out cross validation across the  member genes by all the methods are reported in Figure \ref{fig:AUC}. The results clearly show that our methods CMNMF takes advantage of LP and ColNMF, which only uses the genome-phenome association network for disease gene discovery.
 
 \section*{Conclusions}
 Gene modules play crucial roles in gene regulation, drug target identifying, and other aspects of application. As the advancements of technology and the expansions of data repositories, the quality and accessibility of data from a wide range of data sources will continuously increase. How to use these accumulated data in a proper way is still a challenging problem for researchers. It's important to design a framework to integrate different types of data for gene module discovery.
 
 In this paper, we introduce a novel method, Consistent Multiple Nonnegative Matrix Factorization (CMNMF) based on genome-phenome association data factorization. Our approach was applied to an integration of hierarchical information of phenotype ontology, as far as we know, which has been rarely used in previous studies. The modules we found by our method express notable biological meaning.
 
-There are several merits of our approach CMNMF. First, CMNMF keeps the gene cluster matrix consistent while it interacts with different phenotype ontology levels in decomposing data matrix; on the other hand, it restricts the similarity of phenotype pairs expressed in phenotype cluster matrix to satisfy the hierarchical structure. To achieve a better clustering results, we introduce sparse regularization on gene and phenotype decomposing matrix. The experiments result on our proposed method and other baselines (including HAC,Kmeans, kernel-Kmeans, LDA, NMF, HMF) show the effectiveness of our method. Furthermore, we give a more detailed discussion on the gene modules found by our method in biological aspects. Besides, we conduct a supervised CMNMF for gene-phenotype association prediction, the comparison of our model with LP and HMF demonstrate the good extension of our methods.
+There are several merits of our approach CMNMF. First, CMNMF keeps the gene cluster matrix consistent while it interacts with different phenotype ontology levels in decomposing data matrix; on the other hand, it restricts the similarity of phenotype pairs expressed in phenotype cluster matrix to satisfy the hierarchical structure. To achieve a better clustering results, we introduce sparse regularization on gene and phenotype decomposing matrix. The experiments result on our proposed method and other baselines (including HAC,Kmeans, kernel-Kmeans, LDA, NMF, HMF, CMNMF) show the effectiveness of our method. Furthermore, we give a more detailed discussion on the gene modules found by our method in biological aspects. Besides, we conduct a supervised CMNMF for gene-phenotype association prediction, the comparison of our model with LP and ColNMF demonstrate the good extension of our methods.
 
 Although we have a trial on integration of hierarchical information of phenotype ontology on mouse for gene module discovery problem, there still exists a number of challenging issues to be solved. Such like: 1) In this work, we didn't give much talk on how to use the phenotype clustering results, because neither there has a clear definition of relationship between phenotypes, nor we have found a meaningful classification of phenotypes as a prior what we can utilize in our model; 2) at the moment, we are doing this research on mouse data, because there are much common characteristics between human and mouse, a key issue in the future is how to align the data between two species or even more in a framework to explore the understanding patterns of human biological mechanism; 3) as we know, gene clustering can also be conducted on a variety of gene expression data, here comes a fascinating question, is there possible to find an effective way to cluster genes by integrating genome-phenome data and expression data? Our work is just a snapshot of the biology system, we provide all our codes on Github website\footnote{\texttt{https://github.com/nkiip/CMNMF}\\} for interested researchers for future further investigations.
 
